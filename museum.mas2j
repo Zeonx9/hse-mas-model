@@ -1,6 +1,6 @@
 MAS museum_complex {
 
-    environment: museum.MuseumEnv(15, 5, 30, 50, 5000)
+    environment: museum.MuseumEnv(15, 5, 30, 50, 6000)
     // args: museumCapacity, hotelCapacity, ticketPrice, hotelPrice, monthlyExpenditures
 
     agents: visitor #20;
@@ -9,3 +9,4 @@ MAS museum_complex {
 
     aslSourcePath: "src/agt";
 }
+
