@@ -1,0 +1,75 @@
+/*
+   Project museum_complex
+
+   Gradle build file for Jason Application
+*/
+
+plugins {
+    id 'com.gradleup.shadow' version '8.3.3'
+    id 'java'
+}
+
+defaultTasks 'run'
+
+repositories {
+    mavenCentral()
+    maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+}
+
+dependencies {
+    implementation 'io.github.jason-lang:jason-interpreter:3.3.0'
+    implementation fileTree(dir: 'lib', include: '*.jar')
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/java'
+            srcDir 'src/env'
+            srcDir '.'
+        }
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+}
+
+task run (type: JavaExec, dependsOn: 'classes') {
+    group = 'Jason'
+    description 'runs the application'
+    mainClass = 'jason.infra.local.RunLocalMAS'
+    args = ['museum.mas2j']
+    classpath sourceSets.main.runtimeClasspath
+}
+
+shadowJar {
+    doFirst {
+        copy {
+            from 'museum.mas2j'
+            rename 'museum.mas2j','default.mas2j'
+            into project.projectDir.absolutePath + '/'
+        }
+    }
+    archiveFileName = "jason-${project.name}-all.jar"
+    from (project.projectDir.absolutePath + '/src') {
+        include '**/*.asl'
+        include '**/*.xml'
+        include '*.properties'
+        exclude 'test'
+    }
+    from (project.buildDir.absolutePath + '/classes') {
+        include '**/*'
+    }
+    from (project.projectDir.absolutePath + '/') {
+        include '*.properties'
+        include 'default.mas2j'
+    }
+
+    manifest {
+        attributes 'Main-Class': 'jason.infra.local.RunLocalMAS'
+    }
+
+    doLast {
+        println("You can run your application with: java -jar build/libs/jason-${project.name}-all.jar")
+    }
+}
