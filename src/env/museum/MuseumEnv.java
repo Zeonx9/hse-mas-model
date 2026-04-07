@@ -3,6 +3,7 @@ package museum;
 import jason.asSyntax.*;
 import jason.environment.TimeSteppedEnvironment;
 
+import java.util.Locale;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -21,9 +22,19 @@ public class MuseumEnv extends TimeSteppedEnvironment {
     private double seasonFactor = 0.3;
     private double wear = 0.0;
     private double attractiveness = 50.0;
-    private double infrastructure = 50.0;
+    private double mobileNetwork       = 50.0;
+    private double paymentSystem       = 50.0;
+    private double transportAccess     = 50.0;
+    private double internetQuality     = 50.0;
+    private double navigationAccess    = 50.0;
+    private double serviceAvailability = 50.0;
     private double budget = 5000.0;
+    private double reviewSum = 0;
+    private int    reviewCount = 0;
+    private static final double REVIEW_WEIGHT = 0.2;
+    private double lastAvgReview = 50.0;
     private boolean repairing = false;
+    private double repairRemainingPayment = 0;
 
     private int museumSlotsFree;
     private int hotelRoomsFree;
@@ -35,6 +46,9 @@ public class MuseumEnv extends TimeSteppedEnvironment {
     private volatile int todayVisits = 0;
     private volatile int todayHotelStays = 0;
     private volatile int todayRefusals = 0;
+
+    private static final double LOAD_DEGRADE_RATE = 0.15;
+    private static final double TIME_DEGRADE_RATE = 0.03;
 
     private static final double BASE_WEAR = 0.05;
     private static final double VISITOR_WEAR = 0.02;
@@ -76,19 +90,27 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         // from step N-1 are guaranteed to have completed.
         if (step > 0) {
             String repairTag = repairing ? " [REPAIR]" : "";
+            String reviewTag = reviewCount > 0
+                    ? String.format("| Rev: %d (avg %.0f) ", reviewCount, reviewSum / reviewCount)
+                    : "| Rev: 0 ";
             logger.info(String.format(
-                    "[Day %d | %s] Visits: %d | Hotel: %d | Refused: %d | Wear: %.1f%% | Attr: %.0f | Infra: %.0f | Budget: %.0f%s",
+                    "[Day %d | %s] Visits: %d | Hotel: %d | Refused: %d | Wear: %.1f%% | Attr: %.0f | Mob: %.0f | Pay: %.0f | Trn: %.0f | Int: %.0f | Nav: %.0f | Svc: %.0f %s| Budget: %.0f%s",
                     day, season, todayVisits, todayHotelStays, todayRefusals,
-                    wear, attractiveness, infrastructure, budget, repairTag));
+                    wear, attractiveness,
+                    mobileNetwork, paymentSystem, transportAccess,
+                    internetQuality, navigationAccess, serviceAvailability,
+                    reviewTag, budget, repairTag));
         }
 
         day = step;
         updateSeason();
         applyMonthlyExpenditures();
+        applyInfrastructureDegradation();
+        applyReviews();
         resetDailyCounters();
         applyWear();
         updatePercepts();
-        try { Thread.sleep(300); } catch (InterruptedException ignored) {}
+        try { Thread.sleep(200); } catch (InterruptedException ignored) {}
     }
 
     @Override
@@ -105,11 +127,11 @@ public class MuseumEnv extends TimeSteppedEnvironment {
             case "invest_attractiveness":
                 handleInvestAttractiveness(ag);
                 break;
-            case "invest_infrastructure":
-                handleInvestInfrastructure(ag);
+            case "invest_infra":
+                handleInvestInfra(ag, action);
                 break;
             case "order_repair":
-                handleOrderRepair(ag);
+                handleOrderRepair(ag, action);
                 break;
             case "do_repair":
                 handleDoRepair(ag);
@@ -144,6 +166,14 @@ public class MuseumEnv extends TimeSteppedEnvironment {
             totalHotelStays++;
             todayHotelStays++;
         }
+
+        if (action.getArity() >= 2) {
+            try {
+                double review = ((NumberTerm) action.getTerm(1)).solve();
+                reviewSum += review;
+                reviewCount++;
+            } catch (Exception ignored) {}
+        }
     }
 
     private synchronized void handleRefuseVisit(String ag) {
@@ -159,32 +189,64 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         logger.info("Manager invested in attractiveness -> " + String.format("%.0f", attractiveness));
     }
 
-    private synchronized void handleInvestInfrastructure(String ag) {
+    private synchronized void handleInvestInfra(String ag, Structure action) {
         double cost = 500;
-        if (budget < cost) return;
+        if (budget < cost || action.getArity() < 1) return;
+        String factor = action.getTerm(0).toString();
         budget -= cost;
-        infrastructure = Math.min(100, infrastructure + 10);
-        logger.info("Manager invested in infrastructure -> " + String.format("%.0f", infrastructure));
+        switch (factor) {
+            case "mobile_network":       mobileNetwork = Math.min(100, mobileNetwork + 10); break;
+            case "payment_system":       paymentSystem = Math.min(100, paymentSystem + 10); break;
+            case "transport_access":     transportAccess = Math.min(100, transportAccess + 10); break;
+            case "internet_quality":     internetQuality = Math.min(100, internetQuality + 10); break;
+            case "navigation_access":    navigationAccess = Math.min(100, navigationAccess + 10); break;
+            case "service_availability": serviceAvailability = Math.min(100, serviceAvailability + 10); break;
+            default: budget += cost; return;
+        }
+        logger.info("Manager invested in " + factor);
     }
 
-    private synchronized void handleOrderRepair(String ag) {
+    private synchronized void handleOrderRepair(String ag, Structure action) {
+        double price = 0;
+        if (action.getArity() > 0) {
+            try {
+                price = ((NumberTerm) action.getTerm(0)).solve();
+            } catch (Exception e) {
+                logger.warning("order_repair: could not parse price, defaulting to 0");
+            }
+        }
+        double upfront = Math.round(price / 2.0);
+        repairRemainingPayment = price - upfront;
+        budget -= upfront;
         repairing = true;
-        logger.info("Manager ordered repair (wear=" + String.format("%.1f", wear) + "%)");
+        logger.info(String.format(
+            "Manager ordered repair (wear=%.1f%%) | negotiated=%.0f, upfront=%.0f, remaining=%.0f, budget=%.0f",
+            wear, price, upfront, repairRemainingPayment, budget));
     }
 
     private synchronized void handleDoRepair(String ag) {
-        double cost = 300;
-        if (budget < cost) {
-            logger.info("Restorer: not enough budget for repair (" + String.format("%.0f", budget) + ")");
-            return;
-        }
-        budget -= cost;
         wear = Math.max(0, wear - 1);
         totalRepairs++;
         if (wear <= 20) {
             repairing = false;
-            logger.info("Restorer completed all repairs -> wear=" + String.format("%.1f", wear) + "%");
+            budget -= repairRemainingPayment;
+            logger.info(String.format(
+                "Repair completed -> wear=%.1f%% | final payment=%.0f, budget=%.0f",
+                wear, repairRemainingPayment, budget));
+            repairRemainingPayment = 0;
         }
+    }
+
+    private void applyInfrastructureDegradation() {
+        double loadRatio = (double) todayVisits / museumCapacity;
+        // Load-sensitive
+        mobileNetwork      = Math.max(0, mobileNetwork      - LOAD_DEGRADE_RATE * loadRatio);
+        paymentSystem      = Math.max(0, paymentSystem      - LOAD_DEGRADE_RATE * loadRatio);
+        // Time-based
+        transportAccess    = Math.max(0, transportAccess    - TIME_DEGRADE_RATE);
+        internetQuality    = Math.max(0, internetQuality    - TIME_DEGRADE_RATE);
+        navigationAccess   = Math.max(0, navigationAccess   - TIME_DEGRADE_RATE);
+        serviceAvailability = Math.max(0, serviceAvailability - TIME_DEGRADE_RATE);
     }
 
     private void applyMonthlyExpenditures() {
@@ -211,6 +273,16 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         }
     }
 
+    private void applyReviews() {
+        if (reviewCount > 0) {
+            lastAvgReview = reviewSum / reviewCount;
+            attractiveness = REVIEW_WEIGHT * lastAvgReview + (1 - REVIEW_WEIGHT) * attractiveness;
+            attractiveness = Math.max(0, Math.min(100, attractiveness));
+        }
+        reviewSum = 0;
+        reviewCount = 0;
+    }
+
     private void applyWear() {
         double damage = BASE_WEAR + VISITOR_WEAR * todayVisits;
         if (random.nextDouble() < RANDOM_DAMAGE_CHANCE) {
@@ -233,14 +305,20 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         addPercept(Literal.parseLiteral("step(" + day + ")"));
         addPercept(Literal.parseLiteral("season(" + season + ")"));
         addPercept(Literal.parseLiteral("season_factor(" + seasonFactor + ")"));
-        addPercept(Literal.parseLiteral("wear(" + String.format("%.1f", wear) + ")"));
+        addPercept(Literal.parseLiteral("wear(" + String.format(Locale.US, "%.1f", wear) + ")"));
         addPercept(Literal.parseLiteral("attractiveness(" + String.format("%.0f", attractiveness) + ")"));
-        addPercept(Literal.parseLiteral("infrastructure(" + String.format("%.0f", infrastructure) + ")"));
+        addPercept(Literal.parseLiteral("mobile_network("       + String.format("%.0f", mobileNetwork) + ")"));
+        addPercept(Literal.parseLiteral("payment_system("       + String.format("%.0f", paymentSystem) + ")"));
+        addPercept(Literal.parseLiteral("transport_access("     + String.format("%.0f", transportAccess) + ")"));
+        addPercept(Literal.parseLiteral("internet_quality("     + String.format("%.0f", internetQuality) + ")"));
+        addPercept(Literal.parseLiteral("navigation_access("    + String.format("%.0f", navigationAccess) + ")"));
+        addPercept(Literal.parseLiteral("service_availability(" + String.format("%.0f", serviceAvailability) + ")"));
         addPercept(Literal.parseLiteral("museum_price(" + ticketPrice + ")"));
         addPercept(Literal.parseLiteral("hotel_price(" + hotelPrice + ")"));
         addPercept(Literal.parseLiteral("museum_slots_free(" + museumSlotsFree + ")"));
         addPercept(Literal.parseLiteral("hotel_rooms_free(" + hotelRoomsFree + ")"));
 
+        addPercept(Literal.parseLiteral("avg_review(" + String.format("%.0f", lastAvgReview) + ")"));
         addPercept(Literal.parseLiteral("repairing(" + (repairing ? "yes" : "no") + ")"));
 
         addPercept("manager", Literal.parseLiteral("budget(" + String.format("%.0f", budget) + ")"));

@@ -3,7 +3,7 @@ MAS museum_complex {
     environment: museum.MuseumEnv(15, 5, 30, 50, 5000)
     // args: museumCapacity, hotelCapacity, ticketPrice, hotelPrice, monthlyExpenditures
 
-    agents: visitor #20;
+    agents: visitor #65;
             manager;
             restorer;
 
