@@ -1,7 +1,6 @@
 // Museum Complex - Visitor Agent
-// Each day: earn small income, then probabilistically decide to visit.
-// Visit probability = (A + I - W/2) * SF / 200
-// Winter ~15%, Summer ~50%
+// 3-stage decision chain: transport → payment → desire
+// P(visit) = P(arrival) × P(payment) × P(desire)
 
 /* Initial beliefs */
 my_budget(0).
@@ -24,21 +23,34 @@ my_budget(0).
       ?my_budget(Old);
       -+my_budget(Old + 10 + R * 20).
 
-/* Has money, museum has space -> roll desire check */
+/* Stage 1: Transport gate */
 +!do_one_action
-   :  season_factor(SF) & attractiveness(A) & infrastructure(I) &
-      wear(W) & museum_price(P) & my_budget(B) & museum_slots_free(F) &
-      F > 0 & B >= P
-   <- .random(Desire);
-      VisitChance = (A + I - W / 2) * SF / 200;
-      if (Desire < VisitChance) {
-         !try_visit;
-      } else {
-         refuse_visit;
-      }.
+   :  transport_access(TA) & museum_price(P) & my_budget(B) &
+      museum_slots_free(F) & F > 0 & B >= P
+   <- ArrivalProb = TA / 100;
+      .random(R1);
+      if (R1 < ArrivalProb) { !attempt_payment; } else { refuse_visit; }.
 
-/* Can't afford or no space */
 +!do_one_action <- refuse_visit.
+
+/* Stage 2: Payment gate */
++!attempt_payment : payment_system(PS)
+   <- PayProb = PS / 100;
+      .random(R2);
+      if (R2 < PayProb) { !check_desire; } else { refuse_visit; }.
++!attempt_payment <- refuse_visit.
+-!attempt_payment <- refuse_visit.
+
+/* Stage 3: Desire check (satisfaction from infra + attractiveness) */
++!check_desire
+   :  mobile_network(MN) & navigation_access(NA) & service_availability(SA) &
+      internet_quality(IQ) & attractiveness(A) & wear(W) & season_factor(SF)
+   <- Satisfaction = (MN + NA + SA) / 3;
+      VisitChance = (A + Satisfaction + IQ / 2 - W / 2) * SF / 250;
+      .random(R3);
+      if (R3 < VisitChance) { !try_visit; } else { refuse_visit; }.
++!check_desire <- refuse_visit.
+-!check_desire <- refuse_visit.
 
 /* Visit with potential hotel stay */
 +!try_visit

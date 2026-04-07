@@ -4,6 +4,7 @@
 /* Initial beliefs */
 negotiating(no).
 negotiating_since(0).
+budget_reserve(10000). /* monthly expenses (7000) + repair fund (3000) */
 
 +step(Day) : true
    <- !do_one_action(Day).
@@ -39,8 +40,8 @@ negotiating_since(0).
 
 /* Priority 2a: matching quote arrived → process it */
 +!do_one_action(Day)
-   : negotiating(yes) & negotiating_since(Since) & repair_quote(Price, Delay, Since) & budget(B)
-   <- Threshold = B - 1000;
+   : negotiating(yes) & negotiating_since(Since) & repair_quote(Price, Delay, Since) & budget(B) & budget_reserve(R)
+   <- Threshold = B - R;
       .print("Day ", Day, ": Quote: price=", Price, ", delay=", Delay,
              " | budget=", B, ", threshold=", Threshold);
       if (Threshold >= Price) {
@@ -78,15 +79,56 @@ negotiating_since(0).
 
 /* Priority 3: invest attractiveness */
 +!do_one_action(Day)
-   : attractiveness(A) & A < 40 & budget(B) & B >= 500
+   : attractiveness(A) & A < 40 & budget(B) & budget_reserve(R) & B >= 500 + R
    <- .print("Day ", Day, ": Investing in attractiveness (", A, "), budget=", B);
       invest_attractiveness.
 
-/* Priority 4: invest infrastructure */
+/* Priority 4: invest in weakest infrastructure factor */
 +!do_one_action(Day)
-   : infrastructure(I) & I < 40 & budget(B) & B >= 500
-   <- .print("Day ", Day, ": Investing in infrastructure (", I, "), budget=", B);
-      invest_infrastructure.
+   : mobile_network(MN) & payment_system(PS) & transport_access(TA) &
+     internet_quality(IQ) & navigation_access(NA) & service_availability(SA) &
+     budget(B) & budget_reserve(R) & B >= 500 + R
+   <- !find_weakest_infra(MN, PS, TA, IQ, NA, SA, Day).
+
+/* mobile_network is weakest */
++!find_weakest_infra(MN, PS, TA, IQ, NA, SA, Day)
+   : PS >= MN & TA >= MN & IQ >= MN & NA >= MN & SA >= MN & MN < 60
+   <- .print("Day ", Day, ": Investing in mobile_network (", MN, ")");
+      invest_infra(mobile_network).
+
+/* payment_system is weakest */
++!find_weakest_infra(MN, PS, TA, IQ, NA, SA, Day)
+   : MN >= PS & TA >= PS & IQ >= PS & NA >= PS & SA >= PS & PS < 60
+   <- .print("Day ", Day, ": Investing in payment_system (", PS, ")");
+      invest_infra(payment_system).
+
+/* transport_access is weakest */
++!find_weakest_infra(MN, PS, TA, IQ, NA, SA, Day)
+   : MN >= TA & PS >= TA & IQ >= TA & NA >= TA & SA >= TA & TA < 60
+   <- .print("Day ", Day, ": Investing in transport_access (", TA, ")");
+      invest_infra(transport_access).
+
+/* internet_quality is weakest */
++!find_weakest_infra(MN, PS, TA, IQ, NA, SA, Day)
+   : MN >= IQ & PS >= IQ & TA >= IQ & NA >= IQ & SA >= IQ & IQ < 60
+   <- .print("Day ", Day, ": Investing in internet_quality (", IQ, ")");
+      invest_infra(internet_quality).
+
+/* navigation_access is weakest */
++!find_weakest_infra(MN, PS, TA, IQ, NA, SA, Day)
+   : MN >= NA & PS >= NA & TA >= NA & IQ >= NA & SA >= NA & NA < 60
+   <- .print("Day ", Day, ": Investing in navigation_access (", NA, ")");
+      invest_infra(navigation_access).
+
+/* service_availability is weakest */
++!find_weakest_infra(MN, PS, TA, IQ, NA, SA, Day)
+   : MN >= SA & PS >= SA & TA >= SA & IQ >= SA & NA >= SA & SA < 60
+   <- .print("Day ", Day, ": Investing in service_availability (", SA, ")");
+      invest_infra(service_availability).
+
+/* all above 60 — nothing to invest */
++!find_weakest_infra(_, _, _, _, _, _, _) <- skip.
+-!find_weakest_infra(_, _, _, _, _, _, _) <- skip.
 
 /* Default */
 +!do_one_action(_) <- skip.
