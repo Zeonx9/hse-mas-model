@@ -3,6 +3,7 @@ package museum;
 import jason.asSyntax.*;
 import jason.environment.TimeSteppedEnvironment;
 
+import java.util.Locale;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -24,6 +25,7 @@ public class MuseumEnv extends TimeSteppedEnvironment {
     private double infrastructure = 50.0;
     private double budget = 5000.0;
     private boolean repairing = false;
+    private double repairRemainingPayment = 0;
 
     private int museumSlotsFree;
     private int hotelRoomsFree;
@@ -88,7 +90,7 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         resetDailyCounters();
         applyWear();
         updatePercepts();
-        try { Thread.sleep(300); } catch (InterruptedException ignored) {}
+        try { Thread.sleep(200); } catch (InterruptedException ignored) {}
     }
 
     @Override
@@ -109,7 +111,7 @@ public class MuseumEnv extends TimeSteppedEnvironment {
                 handleInvestInfrastructure(ag);
                 break;
             case "order_repair":
-                handleOrderRepair(ag);
+                handleOrderRepair(ag, action);
                 break;
             case "do_repair":
                 handleDoRepair(ag);
@@ -167,23 +169,34 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         logger.info("Manager invested in infrastructure -> " + String.format("%.0f", infrastructure));
     }
 
-    private synchronized void handleOrderRepair(String ag) {
+    private synchronized void handleOrderRepair(String ag, Structure action) {
+        double price = 0;
+        if (action.getArity() > 0) {
+            try {
+                price = ((NumberTerm) action.getTerm(0)).solve();
+            } catch (Exception e) {
+                logger.warning("order_repair: could not parse price, defaulting to 0");
+            }
+        }
+        double upfront = Math.round(price / 2.0);
+        repairRemainingPayment = price - upfront;
+        budget -= upfront;
         repairing = true;
-        logger.info("Manager ordered repair (wear=" + String.format("%.1f", wear) + "%)");
+        logger.info(String.format(
+            "Manager ordered repair (wear=%.1f%%) | negotiated=%.0f, upfront=%.0f, remaining=%.0f, budget=%.0f",
+            wear, price, upfront, repairRemainingPayment, budget));
     }
 
     private synchronized void handleDoRepair(String ag) {
-        double cost = 300;
-        if (budget < cost) {
-            logger.info("Restorer: not enough budget for repair (" + String.format("%.0f", budget) + ")");
-            return;
-        }
-        budget -= cost;
         wear = Math.max(0, wear - 1);
         totalRepairs++;
         if (wear <= 20) {
             repairing = false;
-            logger.info("Restorer completed all repairs -> wear=" + String.format("%.1f", wear) + "%");
+            budget -= repairRemainingPayment;
+            logger.info(String.format(
+                "Repair completed -> wear=%.1f%% | final payment=%.0f, budget=%.0f",
+                wear, repairRemainingPayment, budget));
+            repairRemainingPayment = 0;
         }
     }
 
@@ -233,7 +246,7 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         addPercept(Literal.parseLiteral("step(" + day + ")"));
         addPercept(Literal.parseLiteral("season(" + season + ")"));
         addPercept(Literal.parseLiteral("season_factor(" + seasonFactor + ")"));
-        addPercept(Literal.parseLiteral("wear(" + String.format("%.1f", wear) + ")"));
+        addPercept(Literal.parseLiteral("wear(" + String.format(Locale.US, "%.1f", wear) + ")"));
         addPercept(Literal.parseLiteral("attractiveness(" + String.format("%.0f", attractiveness) + ")"));
         addPercept(Literal.parseLiteral("infrastructure(" + String.format("%.0f", infrastructure) + ")"));
         addPercept(Literal.parseLiteral("museum_price(" + ticketPrice + ")"));
