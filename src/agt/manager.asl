@@ -4,7 +4,8 @@
 /* Initial beliefs */
 negotiating(no).
 negotiating_since(0).
-budget_reserve(10000). /* monthly expenses (7000) + repair fund (3000) */
+budget_reserve(5000). /* monthly fixed expenses */
+repair_fund(6000).    /* target savings for repair */
 
 +step(Day) : true
    <- !do_one_action(Day).
@@ -26,9 +27,9 @@ budget_reserve(10000). /* monthly expenses (7000) + repair fund (3000) */
       +repair_pending_delay(0);
       skip.
 
-/* Priority 1: high wear, idle → request quote (clear stale beliefs first) */
+/* Priority 1: critical wear (>60), idle → mandatory repair request */
 +!do_one_action(Day)
-   : wear(W) & W > 30 & repairing(no) & negotiating(no) & budget(B) & B >= 300
+   : wear(W) & W > 60 & repairing(no) & negotiating(no) & budget(B) & B >= 300
    <- .print("Day ", Day, ": Wear=", W, "%, requesting quote from restorer.");
       -repair_refused(_);
       -repair_quote(_, _, _);
@@ -40,7 +41,8 @@ budget_reserve(10000). /* monthly expenses (7000) + repair fund (3000) */
 
 /* Priority 2a: matching quote arrived → process it */
 +!do_one_action(Day)
-   : negotiating(yes) & negotiating_since(Since) & repair_quote(Price, Delay, Since) & budget(B) & budget_reserve(R)
+   : negotiating(yes) & negotiating_since(Since) & repair_quote(Price, Delay, Since) &
+     budget(B) & budget_reserve(R)
    <- Threshold = B - R;
       .print("Day ", Day, ": Quote: price=", Price, ", delay=", Delay,
              " | budget=", B, ", threshold=", Threshold);
@@ -77,18 +79,74 @@ budget_reserve(10000). /* monthly expenses (7000) + repair fund (3000) */
    <- .print("Day ", Day, ": Awaiting repair quote...");
       skip.
 
-/* Priority 3: invest attractiveness */
+/* Priority 3: Low reviews + wear > 20 → probabilistic repair vs invest */
 +!do_one_action(Day)
-   : attractiveness(A) & A < 40 & budget(B) & budget_reserve(R) & B >= 500 + R
+   : avg_review(AR) & AR < 50 & wear(W) & W > 20 & W <= 60 &
+     repairing(no) & negotiating(no) &
+     budget(B) & budget_reserve(R) & B >= R * 2 + 500 &
+     mobile_network(MN) & payment_system(PS) & transport_access(TA) &
+     internet_quality(IQ) & navigation_access(NA) & service_availability(SA)
+   <- InfraAvg = (MN + PS + TA + IQ + NA + SA) / 6;
+      PRepair = W / (W + (100 - InfraAvg));
+      .random(R1);
+      .print("Day ", Day, ": Reviews low (avg=", AR, "), wear=", W,
+             "%, infra=", InfraAvg, ", P(repair)=", PRepair);
+      if (R1 < PRepair) {
+         .print("Day ", Day, ": → early repair request.");
+         -repair_refused(_);
+         -repair_quote(_, _, _);
+         -repair_price(_);
+         -+negotiating(yes);
+         -+negotiating_since(Day);
+         .send(restorer, achieve, quote_request(Day));
+         skip;
+      } else {
+         .print("Day ", Day, ": → investing in infrastructure.");
+         !try_invest(Day);
+      }.
+
+/* Priority 4: Probabilistic investment */
++!do_one_action(Day)
+   : budget(B) & budget_reserve(R) & B >= R * 2 + 500 &
+     wear(W) & repair_fund(RF)
+   <- Available = B - R;
+      if (Available < RF & W > 20) {
+         /* Tight on repair fund + noticeable wear → may skip invest */
+         InvestProb = math.max(0.1, 1 - W / 100);
+         .random(R2);
+         if (R2 < InvestProb) {
+            !try_invest(Day);
+         } else {
+            .print("Day ", Day, ": Saving for repairs (wear=", W, "%, available=", Available, ").");
+            skip;
+         };
+      } else {
+         /* Enough money or low wear → always invest */
+         !try_invest(Day);
+      }.
+
+/* Default */
++!do_one_action(_) <- skip.
+-!do_one_action(_) <- skip.
+
+/* === Investment sub-goal === */
+
++!try_invest(Day)
+   : attractiveness(A) & A < 40 &
+     budget(B) & budget_reserve(R) & B >= R * 2 + 500
    <- .print("Day ", Day, ": Investing in attractiveness (", A, "), budget=", B);
       invest_attractiveness.
 
-/* Priority 4: invest in weakest infrastructure factor */
-+!do_one_action(Day)
++!try_invest(Day)
    : mobile_network(MN) & payment_system(PS) & transport_access(TA) &
      internet_quality(IQ) & navigation_access(NA) & service_availability(SA) &
-     budget(B) & budget_reserve(R) & B >= 500 + R
+     budget(B) & budget_reserve(R) & B >= R * 2 + 500
    <- !find_weakest_infra(MN, PS, TA, IQ, NA, SA, Day).
+
++!try_invest(_) <- skip.
+-!try_invest(_) <- skip.
+
+/* === Find weakest infrastructure factor === */
 
 /* mobile_network is weakest */
 +!find_weakest_infra(MN, PS, TA, IQ, NA, SA, Day)
@@ -129,10 +187,6 @@ budget_reserve(10000). /* monthly expenses (7000) + repair fund (3000) */
 /* all above 60 — nothing to invest */
 +!find_weakest_infra(_, _, _, _, _, _, _) <- skip.
 -!find_weakest_infra(_, _, _, _, _, _, _) <- skip.
-
-/* Default */
-+!do_one_action(_) <- skip.
--!do_one_action(_) <- skip.
 
 /* Stale beliefs cleanup — drop responses that don't match current negotiation */
 +repair_quote(_, _, _)   <- -repair_quote(_, _, _).

@@ -29,6 +29,10 @@ public class MuseumEnv extends TimeSteppedEnvironment {
     private double navigationAccess    = 50.0;
     private double serviceAvailability = 50.0;
     private double budget = 5000.0;
+    private double reviewSum = 0;
+    private int    reviewCount = 0;
+    private static final double REVIEW_WEIGHT = 0.2;
+    private double lastAvgReview = 50.0;
     private boolean repairing = false;
     private double repairRemainingPayment = 0;
 
@@ -86,19 +90,23 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         // from step N-1 are guaranteed to have completed.
         if (step > 0) {
             String repairTag = repairing ? " [REPAIR]" : "";
+            String reviewTag = reviewCount > 0
+                    ? String.format("| Rev: %d (avg %.0f) ", reviewCount, reviewSum / reviewCount)
+                    : "| Rev: 0 ";
             logger.info(String.format(
-                    "[Day %d | %s] Visits: %d | Hotel: %d | Refused: %d | Wear: %.1f%% | Attr: %.0f | Mob: %.0f | Pay: %.0f | Trn: %.0f | Int: %.0f | Nav: %.0f | Svc: %.0f | Budget: %.0f%s",
+                    "[Day %d | %s] Visits: %d | Hotel: %d | Refused: %d | Wear: %.1f%% | Attr: %.0f | Mob: %.0f | Pay: %.0f | Trn: %.0f | Int: %.0f | Nav: %.0f | Svc: %.0f %s| Budget: %.0f%s",
                     day, season, todayVisits, todayHotelStays, todayRefusals,
                     wear, attractiveness,
                     mobileNetwork, paymentSystem, transportAccess,
                     internetQuality, navigationAccess, serviceAvailability,
-                    budget, repairTag));
+                    reviewTag, budget, repairTag));
         }
 
         day = step;
         updateSeason();
         applyMonthlyExpenditures();
         applyInfrastructureDegradation();
+        applyReviews();
         resetDailyCounters();
         applyWear();
         updatePercepts();
@@ -157,6 +165,14 @@ public class MuseumEnv extends TimeSteppedEnvironment {
             budget += hotelPrice;
             totalHotelStays++;
             todayHotelStays++;
+        }
+
+        if (action.getArity() >= 2) {
+            try {
+                double review = ((NumberTerm) action.getTerm(1)).solve();
+                reviewSum += review;
+                reviewCount++;
+            } catch (Exception ignored) {}
         }
     }
 
@@ -257,6 +273,16 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         }
     }
 
+    private void applyReviews() {
+        if (reviewCount > 0) {
+            lastAvgReview = reviewSum / reviewCount;
+            attractiveness = REVIEW_WEIGHT * lastAvgReview + (1 - REVIEW_WEIGHT) * attractiveness;
+            attractiveness = Math.max(0, Math.min(100, attractiveness));
+        }
+        reviewSum = 0;
+        reviewCount = 0;
+    }
+
     private void applyWear() {
         double damage = BASE_WEAR + VISITOR_WEAR * todayVisits;
         if (random.nextDouble() < RANDOM_DAMAGE_CHANCE) {
@@ -292,6 +318,7 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         addPercept(Literal.parseLiteral("museum_slots_free(" + museumSlotsFree + ")"));
         addPercept(Literal.parseLiteral("hotel_rooms_free(" + hotelRoomsFree + ")"));
 
+        addPercept(Literal.parseLiteral("avg_review(" + String.format("%.0f", lastAvgReview) + ")"));
         addPercept(Literal.parseLiteral("repairing(" + (repairing ? "yes" : "no") + ")"));
 
         addPercept("manager", Literal.parseLiteral("budget(" + String.format("%.0f", budget) + ")"));

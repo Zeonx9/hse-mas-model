@@ -55,19 +55,29 @@ my_budget(0).
 /* Visit with potential hotel stay */
 +!try_visit
    :  hotel_rooms_free(H) & hotel_price(HP) & museum_price(P) & my_budget(B) &
-      H > 0 & B >= P + HP
-   <- .random(R);
+      H > 0 & B >= P + HP &
+      mobile_network(MN) & service_availability(SA) & navigation_access(NA) &
+      internet_quality(IQ) & wear(W)
+   <- .random(RN); Noise = RN * 20 - 10;
+      Review0 = (MN + SA + NA + IQ) / 4 - W / 2 + Noise;
+      Review = math.max(0, math.min(100, Review0));
+      .random(R);
       if (R < 0.3) {
-         visit(yes);
+         visit(yes, Review);
          -+my_budget(B - P - HP);
       } else {
-         visit(no);
+         visit(no, Review);
          -+my_budget(B - P);
       }.
 
 +!try_visit
-   :  museum_price(P) & my_budget(B) & B >= P
-   <- visit(no);
+   :  museum_price(P) & my_budget(B) & B >= P &
+      mobile_network(MN) & service_availability(SA) & navigation_access(NA) &
+      internet_quality(IQ) & wear(W)
+   <- .random(RN); Noise = RN * 20 - 10;
+      Review0 = (MN + SA + NA + IQ) / 4 - W / 2 + Noise;
+      Review = math.max(0, math.min(100, Review0));
+      visit(no, Review);
       -+my_budget(B - P).
 
 +!try_visit <- refuse_visit.
