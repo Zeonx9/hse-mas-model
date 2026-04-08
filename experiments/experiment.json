@@ -1,0 +1,12 @@
+{
+  "maxDays": [365, 730],
+  "runsPerCombination": 3,
+  "output": "experiments/results.csv",
+  "parameters": {
+    "museumCapacity": [10, 15, 20],
+    "hotelCapacity": [3, 5, 7],
+    "ticketPrice": [20, 30, 50],
+    "hotelPrice": [30, 50],
+    "monthlyExpenditures": [5000]
+  }
+}
