@@ -15,16 +15,20 @@ public class AIClient {
     private static final String ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
     private static final String MODEL = "qwen/qwen3-coder-next";
     private static final int MAX_EXCHANGES = 30;
+    private static final int PLAN_DAYS = 7;
 
     private final String apiKey;
     private final HttpClient httpClient;
     private final List<String[]> conversationHistory; // [role, content]
 
+    // Cached weekly plan: queue of [action, target]
+    private final Deque<String[]> planQueue = new ArrayDeque<>();
+
     private static final String SYSTEM_PROMPT =
-            "Ты — AI-менеджер музейного комплекса в агентной симуляции. Каждый шаг (день) ты получаешь JSON с текущим состоянием и должен выбрать ОДНО действие.\n\n"
+            "Ты — AI-менеджер музейного комплекса в агентной симуляции. Ты получаешь JSON с текущим состоянием и должен спланировать действия на следующие 7 дней.\n\n"
             + "## Единицы измерения\n\n"
             + "wear, attractiveness, avg_review и все факторы инфраструктуры — доли от 0.0 до 1.0.\n"
-            + "  wear=0.004 -> износ 0.4% (отлично). wear=0.6 -> износ 60% (критический).\n"
+            + "  wear=0.004 -> износ 0.4% (отлично). wear=0.3 -> износ 60% (критический).\n"
             + "  attractiveness=0.65 -> 65%. mobile_network=0.5 -> 50%.\n"
             + "budget, monthly_expenses, цены — абсолютные значения в денежных единицах.\n\n"
             + "## Управление бюджетом (ПРИОРИТЕТ #1)\n\n"
@@ -33,18 +37,19 @@ public class AIClient {
             + "Каждые 30 дней списывается monthly_expenses. Поле days_until_expenses показывает сколько дней осталось до следующего списания.\n\n"
             + "### Правило безопасного бюджета\n"
             + "safe_budget = monthly_expenses + 2000 (т.е. 7000)\n"
-            + "Если budget < safe_budget → НЕЛЬЗЯ тратить, делай skip.\n"
-            + "Если budget >= safe_budget но budget - 500 < safe_budget → тоже skip (вложение стоит 500).\n"
-            + "Инвестируй ТОЛЬКО если после траты останется >= safe_budget.\n\n"
-            + "### Прогнозирование доходов\n"
+            + "Посчитай max_investments = (budget - safe_budget) / 500 (округлить вниз).\n"
+            + "Это максимальное число инвестиций в плане. Остальные дни — skip.\n\n"
+            + "### ВАЖНО: трать излишки!\n"
+            + "Деньги сверх safe_budget должны РАБОТАТЬ. Копить сверх safe_budget бессмысленно — деньги не приносят процентов.\n"
+            + "Инвестиции повышают инфраструктуру → больше посетителей → больше дохода. Это окупается!\n"
+            + "Если budget=15000 и safe=7000, то max_investments = (15000-7000)/500 = 16. Ты можешь вложить все 7 дней!\n"
+            + "Если budget=9000 и safe=7000, то max_investments = (9000-7000)/500 = 4. Вложи 4 дня, 3 дня skip.\n"
+            + "skip оправдан ТОЛЬКО если: budget слишком низкий ИЛИ все факторы инфры уже >= 0.8.\n\n"
+            + "### Сезонный контекст\n"
             + "Доход зависит от посетителей. Посетители зависят от: сезона, инфраструктуры, attractiveness.\n"
-            + "- winter: очень мало посетителей. Копи деньги, не инвестируй без необходимости.\n"
-            + "- spring: умеренный поток. Можно осторожно инвестировать.\n"
-            + "- summer: пик сезона, максимум дохода. Лучшее время для инвестиций.\n"
-            + "- autumn: поток снижается. Начинай копить на зиму.\n\n"
-            + "### Подготовка к зиме\n"
-            + "Перед зимой (autumn, day%365 > 250) накапливай запас. Зимой доход минимальный, а расходы те же.\n"
-            + "Нужен запас минимум на 2-3 месяца: budget >= monthly_expenses * 3 перед зимой.\n\n"
+            + "- winter: мало посетителей, но инвестиции всё равно нужны если бюджет позволяет.\n"
+            + "- spring/summer/autumn: активно инвестируй, особенно летом.\n"
+            + "Запас на зиму: к day%365=335 желательно иметь budget >= monthly_expenses * 2.\n\n"
             + "## Стратегия по износу (wear)\n\n"
             + "- wear < 0.2: отличное состояние, ремонт НЕ нужен.\n"
             + "- wear 0.2–0.4: нормально, ремонт не нужен.\n"
@@ -52,35 +57,34 @@ public class AIClient {
             + "- wear > 0.6: КРИТИЧНО! Немедленно request_repair.\n"
             + "Ремонт тоже стоит денег (50% сразу, 50% по завершении). Учитывай это в бюджете.\n\n"
             + "## Доступные действия\n\n"
-            + "1. skip — пропустить ход. Используй когда бюджет низкий или нечего улучшать.\n"
+            + "1. skip — пропустить ход. ТОЛЬКО если budget < safe_budget+500 или все факторы >= 0.8.\n"
 //            + "2. invest_attractiveness — вложить 500, attractiveness +0.1 (макс 1.0)\n"
             + "2. invest_infra:<factor> — вложить 500, фактор +0.1 (макс 1.0)\n"
             + "   Факторы: mobile_network, payment_system, transport_access, internet_quality, navigation_access, service_availability\n"
             + "3. request_repair — запросить котировку (ТОЛЬКО при wear > 0.4)\n"
             + "4. accept_quote — принять котировку (ТОЛЬКО если pending_quote != null)\n"
             + "5. reject_quote — отклонить котировку (ТОЛЬКО если pending_quote != null)\n\n"
-            + "## ВАЖНО: задержка действий (~4 дня)\n\n"
-            + "Твои решения применяются с задержкой примерно 3–4 шага (дня).\n"
-            + "Это значит:\n"
-            + "- Если ты вложил в mobile_network, его значение вырастет не сразу, а через ~4 дня.\n"
-            + "- Если значение фактора не изменилось на следующем шаге после инвестиции — это нормально, жди.\n"
-            + "- НЕ инвестируй в тот же фактор повторно, если ты уже вложил в него 1–4 шага назад. Помни свои прошлые решения!\n"
-            + "- Планируй наперёд: если wear=0.5 и растёт, запрашивай ремонт сейчас, не жди 0.6.\n\n"
             + "## Прочие правила\n\n"
             + "- НЕ запрашивай ремонт при wear < 0.2.\n"
             + "- Для ремонта: request_repair -> жди pending_quote -> accept_quote/reject_quote.\n"
             + "- Нельзя request_repair если repairing=true или negotiating=true.\n"
             + "- Инфраструктура деградирует ежедневно. Низкие значения отпугивают посетителей.\n"
             + "- Инвестируй в самый низкий фактор инфраструктуры — это даёт максимальный эффект.\n"
-            + "- Из-за задержки чередуй инвестиции между разными факторами, не вкладывай в один и тот же подряд.\n\n"
+            + "- Чередуй инвестиции между разными факторами, не вкладывай в один и тот же подряд.\n\n"
             + "## Формат ответа\n\n"
-            + "ТОЛЬКО валидный JSON, без markdown:\n"
-            + "{\"action\": \"<действие>\", \"target\": \"<factor или none>\", \"reasoning\": \"<кратко>\"}\n\n"
-            + "Примеры:\n"
-            + "{\"action\": \"skip\", \"target\": \"none\", \"reasoning\": \"budget=6500 < safe(7000), копим\"}\n"
-            + "{\"action\": \"invest_infra\", \"target\": \"mobile_network\", \"reasoning\": \"budget=12000, mobile_network=0.38 — самый низкий\"}\n"
-            + "{\"action\": \"skip\", \"target\": \"none\", \"reasoning\": \"autumn, day=280, копим на зиму\"}\n"
-            + "{\"action\": \"request_repair\", \"target\": \"none\", \"reasoning\": \"wear=0.62, budget=15000 — можем позволить\"}";
+            + "Верни JSON-массив ровно из 7 объектов — план на 7 дней. День 1 = сегодня.\n"
+            + "ТОЛЬКО валидный JSON, без markdown, без комментариев:\n"
+            + "[{\"action\":\"...\",\"target\":\"...\",\"reasoning\":\"...\"}, ...ещё 6 объектов]\n\n"
+            + "Пример (budget=12000, safe=7000, max_investments=10 → все 7 дней инвестируем):\n"
+            + "[\n"
+            + "  {\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"самый низкий 0.38\"},\n"
+            + "  {\"action\":\"invest_infra\",\"target\":\"payment_system\",\"reasoning\":\"0.42 — второй\"},\n"
+            + "  {\"action\":\"invest_infra\",\"target\":\"transport_access\",\"reasoning\":\"0.45\"},\n"
+            + "  {\"action\":\"invest_infra\",\"target\":\"internet_quality\",\"reasoning\":\"0.48\"},\n"
+            + "  {\"action\":\"invest_infra\",\"target\":\"navigation_access\",\"reasoning\":\"0.50\"},\n"
+            + "  {\"action\":\"invest_infra\",\"target\":\"service_availability\",\"reasoning\":\"0.52\"},\n"
+            + "  {\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"снова самый низкий после цикла\"}\n"
+            + "]";
 
     public AIClient() {
         this.apiKey = System.getenv("OPENROUTER_API_KEY");
@@ -98,10 +102,17 @@ public class AIClient {
             return new String[]{"skip", "none"};
         }
 
+        // Return next action from cached plan if available
+        if (!planQueue.isEmpty()) {
+            String[] next = planQueue.poll();
+            logger.info("AI plan step (cached): " + next[0] + " " + next[1]);
+            return next;
+        }
+
+        // Plan exhausted — request new 7-day plan from API
         String userMessage = mapToJson(state);
         conversationHistory.add(new String[]{"user", userMessage});
 
-        // Trim to last MAX_EXCHANGES exchanges (2 entries each)
         while (conversationHistory.size() > MAX_EXCHANGES * 2) {
             conversationHistory.remove(0);
         }
@@ -117,14 +128,14 @@ public class AIClient {
             String body = "{\"model\":" + jsonString(MODEL)
                     + ",\"messages\":" + messagesJson
                     + ",\"temperature\":0.3"
-                    + ",\"max_tokens\":200}";
+                    + ",\"max_tokens\":600}";
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(ENDPOINT))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + apiKey)
                     .POST(HttpRequest.BodyPublishers.ofString(body))
-                    .timeout(Duration.ofSeconds(30))
+                    .timeout(Duration.ofSeconds(60))
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -145,7 +156,20 @@ public class AIClient {
             }
 
             conversationHistory.add(new String[]{"assistant", content});
-            return parseDecision(content);
+
+            List<String[]> plan = parsePlan(content);
+            if (plan.isEmpty()) {
+                return new String[]{"skip", "none"};
+            }
+
+            // First action returned immediately, rest queued
+            String[] first = plan.get(0);
+            for (int i = 1; i < plan.size(); i++) {
+                planQueue.add(plan.get(i));
+            }
+
+            logger.info("AI plan loaded: " + plan.size() + " actions, executing first: " + first[0] + " " + first[1]);
+            return first;
 
         } catch (Exception e) {
             logger.warning("AI decision failed: " + e.getMessage());
@@ -154,38 +178,81 @@ public class AIClient {
         }
     }
 
-    private String[] parseDecision(String content) {
+    /** Invalidate cached plan — called when unexpected state requires replanning. */
+    public void invalidatePlan() {
+        planQueue.clear();
+    }
+
+    private List<String[]> parsePlan(String content) {
+        List<String[]> plan = new ArrayList<>();
         try {
             String cleaned = content.strip();
             if (cleaned.startsWith("```")) {
                 cleaned = cleaned.replaceAll("^```[a-z]*\\n?", "").replaceAll("\\n?```$", "").strip();
             }
 
-            String action = extractJsonStringField(cleaned, "action");
-            String target = extractJsonStringField(cleaned, "target");
-            String reasoning = extractJsonStringField(cleaned, "reasoning");
-
-            if (action == null) {
-                logger.warning("No 'action' field in AI response: " + content);
-                return new String[]{"skip", "none"};
-            }
-            if (target == null) target = "none";
-
-            // Handle invest_infra:<factor> format
-            if (action.startsWith("invest_infra:")) {
-                target = action.substring("invest_infra:".length());
-                action = "invest_infra";
+            // Find the JSON array
+            int arrStart = cleaned.indexOf('[');
+            int arrEnd = cleaned.lastIndexOf(']');
+            if (arrStart < 0 || arrEnd < 0 || arrEnd <= arrStart) {
+                // Fallback: try parsing as single action
+                String[] single = parseSingleAction(cleaned);
+                if (single != null) plan.add(single);
+                return plan;
             }
 
-            if (reasoning != null && !reasoning.isEmpty()) {
-                logger.info("AI reasoning: " + reasoning);
+            String arrContent = cleaned.substring(arrStart + 1, arrEnd);
+
+            // Split by "},{" — simple but effective for flat array of objects
+            // First, find each {...} object
+            int depth = 0;
+            int objStart = -1;
+            for (int i = 0; i < arrContent.length(); i++) {
+                char c = arrContent.charAt(i);
+                if (c == '{') {
+                    if (depth == 0) objStart = i;
+                    depth++;
+                } else if (c == '}') {
+                    depth--;
+                    if (depth == 0 && objStart >= 0) {
+                        String obj = arrContent.substring(objStart, i + 1);
+                        String[] action = parseSingleAction(obj);
+                        if (action != null) {
+                            plan.add(action);
+                        }
+                        objStart = -1;
+                    }
+                }
             }
 
-            return new String[]{action, target};
         } catch (Exception e) {
-            logger.warning("Failed to parse AI response: " + content);
-            return new String[]{"skip", "none"};
+            logger.warning("Failed to parse AI plan: " + content);
         }
+
+        if (plan.isEmpty()) {
+            plan.add(new String[]{"skip", "none"});
+        }
+        return plan;
+    }
+
+    private String[] parseSingleAction(String json) {
+        String action = extractJsonStringField(json, "action");
+        String target = extractJsonStringField(json, "target");
+        String reasoning = extractJsonStringField(json, "reasoning");
+
+        if (action == null) return null;
+        if (target == null) target = "none";
+
+        if (action.startsWith("invest_infra:")) {
+            target = action.substring("invest_infra:".length());
+            action = "invest_infra";
+        }
+
+        if (reasoning != null && !reasoning.isEmpty()) {
+            logger.info("AI reasoning: " + reasoning);
+        }
+
+        return new String[]{action, target};
     }
 
     // --- Minimal JSON helpers (no external dependencies) ---
@@ -223,7 +290,7 @@ public class AIClient {
                 if (d == Math.floor(d) && !Double.isInfinite(d)) {
                     sb.append((long) d);
                 } else {
-                    sb.append(String.format(Locale.US, "%.1f", d));
+                    sb.append(String.format(Locale.US, "%.4f", d));
                 }
             } else {
                 sb.append(jsonString(v.toString()));
@@ -235,17 +302,10 @@ public class AIClient {
 
     /** Extract "content" string from OpenRouter chat completion response. */
     private static String extractContent(String responseBody) {
-        // Find "choices"[0]."message"."content":"..."
-        int contentIdx = responseBody.indexOf("\"content\"");
-        if (contentIdx < 0) return null;
-
-        // Walk through: find "choices" -> "message" -> "content"
-        // Strategy: find the "content" that appears after "message"
         int msgIdx = responseBody.indexOf("\"message\"");
         if (msgIdx < 0) return null;
         int cIdx = responseBody.indexOf("\"content\"", msgIdx);
         if (cIdx < 0) return null;
-
         return extractStringValue(responseBody, cIdx);
     }
 
@@ -262,12 +322,10 @@ public class AIClient {
         int colon = json.indexOf(':', keyPos);
         if (colon < 0) return null;
 
-        // Skip whitespace after colon
         int i = colon + 1;
         while (i < json.length() && Character.isWhitespace(json.charAt(i))) i++;
         if (i >= json.length() || json.charAt(i) != '"') return null;
 
-        // Parse the quoted string (handling escape sequences)
         i++; // skip opening quote
         StringBuilder sb = new StringBuilder();
         while (i < json.length()) {

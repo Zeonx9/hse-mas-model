@@ -24,6 +24,13 @@ public class decide extends DefaultInternalAction {
         BeliefBase bb = ts.getAg().getBB();
         Map<String, Object> state = extractState(bb);
 
+        // Invalidate cached plan if quote arrived or repair started (needs replanning)
+        boolean hasQuote = state.get("pending_quote") != null;
+        boolean repairing = Boolean.TRUE.equals(state.get("repairing"));
+        if (hasQuote || repairing) {
+            client.invalidatePlan();
+        }
+
         String[] result = client.decide(state);
 
         return un.unifies(args[0], new StringTermImpl(result[0]))
