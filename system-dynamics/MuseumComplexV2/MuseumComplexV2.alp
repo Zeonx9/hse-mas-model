@@ -109,6 +109,171 @@
 			<CurrentLevel>1776000000010</CurrentLevel>
 			<ConnectionsId>1776000000006</ConnectionsId>
 			<Variables>
+				<Variable Class="AuxVariable">
+					<Id>1776000400001</Id>
+					<Name><![CDATA[SeasonFactor]]></Name>
+					<X>50</X><Y>550</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[(time()%365 < 60 || time()%365 >= 335) ? 0.3 : (time()%365 < 152) ? 0.7 : (time()%365 < 244) ? 1.0 : 0.5]]></Formula>
+						<Value><![CDATA[0]]></Value>
+						<Color>-4073239</Color>
+					</Properties>
+
+				</Variable>
+				<Variable Class="AuxVariable">
+					<Id>1776000400002</Id>
+					<Name><![CDATA[P_visit]]></Name>
+					<X>200</X><Y>550</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[(Infrastructure/100) * (Infrastructure/100) * ((Attractiveness + 1.5*Infrastructure - Wear/2) * SeasonFactor / 250)]]></Formula>
+						<Value><![CDATA[0]]></Value>
+						<Color>-4073239</Color>
+					</Properties>
+
+				</Variable>
+				<Variable Class="AuxVariable">
+					<Id>1776000400003</Id>
+					<Name><![CDATA[EffCapacity]]></Name>
+					<X>350</X><Y>550</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[(repairActive > 0.5) ? museumCapacity / 2.0 : museumCapacity]]></Formula>
+						<Value><![CDATA[0]]></Value>
+						<Color>-4073239</Color>
+					</Properties>
+
+				</Variable>
+				<Variable Class="AuxVariable">
+					<Id>1776000400004</Id>
+					<Name><![CDATA[Visits]]></Name>
+					<X>500</X><Y>550</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[min(N * max(0, P_visit), EffCapacity)]]></Formula>
+						<Value><![CDATA[0]]></Value>
+						<Color>-4073239</Color>
+					</Properties>
+
+				</Variable>
+				<Variable Class="AuxVariable">
+					<Id>1776000400005</Id>
+					<Name><![CDATA[HotelStays]]></Name>
+					<X>650</X><Y>550</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[0.3 * min(Visits, hotelCapacity)]]></Formula>
+						<Value><![CDATA[0]]></Value>
+						<Color>-4073239</Color>
+					</Properties>
+
+				</Variable>
+				<Variable Class="AuxVariable">
+					<Id>1776000400006</Id>
+					<Name><![CDATA[AvgReview]]></Name>
+					<X>50</X><Y>620</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[max(0, min(100, Infrastructure - Wear/2))]]></Formula>
+						<Value><![CDATA[0]]></Value>
+						<Color>-4073239</Color>
+					</Properties>
+
+				</Variable>
+				<Variable Class="AuxVariable">
+					<Id>1776000400007</Id>
+					<Name><![CDATA[repairActive]]></Name>
+					<X>200</X><Y>620</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[(Wear > wearRepairThreshold && Budget >= 300) ? 1 : 0]]></Formula>
+						<Value><![CDATA[0]]></Value>
+						<Color>-4073239</Color>
+					</Properties>
+
+				</Variable>
+				<Variable Class="AuxVariable">
+					<Id>1776000400008</Id>
+					<Name><![CDATA[repairCostRate]]></Name>
+					<X>350</X><Y>620</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[(repairActive > 0.5) ? (Wear * 100 + 300) / max(1, Wear - 20) : 0]]></Formula>
+						<Value><![CDATA[0]]></Value>
+						<Color>-4073239</Color>
+					</Properties>
+
+				</Variable>
+				<Variable Class="AuxVariable">
+					<Id>1776000400011</Id>
+					<Name><![CDATA[investBudgetOk]]></Name>
+					<X>50</X><Y>690</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[(Budget > budgetReserve * 2 + 500 && repairActive < 0.5) ? 1 : 0]]></Formula>
+						<Value><![CDATA[0]]></Value>
+						<Color>-4073239</Color>
+					</Properties>
+
+				</Variable>
+				<Variable Class="AuxVariable">
+					<Id>1776000400012</Id>
+					<Name><![CDATA[attrInvestDecision]]></Name>
+					<X>200</X><Y>690</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[(investBudgetOk > 0.5 && Attractiveness < 40) ? 1 : 0]]></Formula>
+						<Value><![CDATA[0]]></Value>
+						<Color>-4073239</Color>
+					</Properties>
+
+				</Variable>
+				<Variable Class="AuxVariable">
+					<Id>1776000400013</Id>
+					<Name><![CDATA[infraInvestDecision]]></Name>
+					<X>350</X><Y>690</Y>
+					<Label><X>0</X><Y>-20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties External="false" Constant="false" Array="false">
+						<Formula><![CDATA[(investBudgetOk > 0.5 && attrInvestDecision < 0.5 && Infrastructure < 60) ? 1 : 0]]></Formula>
+						<Value><![CDATA[0]]></Value>
+						<Color>-4073239</Color>
+					</Properties>
+
+				</Variable>
 				<Variable Class="StockVariable">
 					<Id>1776000100001</Id>
 					<Name><![CDATA[Budget]]></Name>
@@ -201,7 +366,7 @@
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SourceId="1776000100001" External="false" Constant="false" Array="false">
-						<Formula><![CDATA[monthlyExpenditures / 30.0]]></Formula>
+						<Formula><![CDATA[monthlyExpenditures/30.0]]></Formula>
 						<Color>-4073239</Color>
 						<ValveIndex>1</ValveIndex>
 						<Points>
@@ -385,7 +550,7 @@
 							<MaxSliderValue><![CDATA[200]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
-					</Properties>
+					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1776000300002</Id>
@@ -409,7 +574,7 @@
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
-					</Properties>
+					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1776000300003</Id>
@@ -433,7 +598,7 @@
 							<MaxSliderValue><![CDATA[50]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
-					</Properties>
+					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1776000300004</Id>
@@ -457,7 +622,7 @@
 							<MaxSliderValue><![CDATA[200]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
-					</Properties>
+					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1776000300005</Id>
@@ -481,7 +646,7 @@
 							<MaxSliderValue><![CDATA[500]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
-					</Properties>
+					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1776000300006</Id>
@@ -505,7 +670,7 @@
 							<MaxSliderValue><![CDATA[50000]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
-					</Properties>
+					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1776000300007</Id>
@@ -529,7 +694,7 @@
 							<MaxSliderValue><![CDATA[50000]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
-					</Properties>
+					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1776000300008</Id>
@@ -553,603 +718,669 @@
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
-					</Properties>
-				</Variable>
-				<Variable Class="AuxVariable">
-					<Id>1776000400001</Id>
-					<Name><![CDATA[SeasonFactor]]></Name>
-					<X>50</X><Y>550</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[(time()%365 < 60 || time()%365 >= 335) ? 0.3 : (time()%365 < 152) ? 0.7 : (time()%365 < 244) ? 1.0 : 0.5]]></Formula>
-						<Value><![CDATA[0]]></Value>
-						<Color>-4073239</Color>
-					</Properties>
-				</Variable>
-				<Variable Class="AuxVariable">
-					<Id>1776000400002</Id>
-					<Name><![CDATA[P_visit]]></Name>
-					<X>200</X><Y>550</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[(Infrastructure/100) * (Infrastructure/100) * ((Attractiveness + 1.5*Infrastructure - Wear/2) * SeasonFactor / 250)]]></Formula>
-						<Value><![CDATA[0]]></Value>
-						<Color>-4073239</Color>
-					</Properties>
-				</Variable>
-				<Variable Class="AuxVariable">
-					<Id>1776000400003</Id>
-					<Name><![CDATA[EffCapacity]]></Name>
-					<X>350</X><Y>550</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[(repairActive > 0.5) ? museumCapacity / 2.0 : museumCapacity]]></Formula>
-						<Value><![CDATA[0]]></Value>
-						<Color>-4073239</Color>
-					</Properties>
-				</Variable>
-				<Variable Class="AuxVariable">
-					<Id>1776000400004</Id>
-					<Name><![CDATA[Visits]]></Name>
-					<X>500</X><Y>550</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[min(N * max(0, P_visit), EffCapacity)]]></Formula>
-						<Value><![CDATA[0]]></Value>
-						<Color>-4073239</Color>
-					</Properties>
-				</Variable>
-				<Variable Class="AuxVariable">
-					<Id>1776000400005</Id>
-					<Name><![CDATA[HotelStays]]></Name>
-					<X>650</X><Y>550</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[0.3 * min(Visits, hotelCapacity)]]></Formula>
-						<Value><![CDATA[0]]></Value>
-						<Color>-4073239</Color>
-					</Properties>
-				</Variable>
-				<Variable Class="AuxVariable">
-					<Id>1776000400006</Id>
-					<Name><![CDATA[AvgReview]]></Name>
-					<X>50</X><Y>620</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[max(0, min(100, Infrastructure - Wear/2))]]></Formula>
-						<Value><![CDATA[0]]></Value>
-						<Color>-4073239</Color>
-					</Properties>
-				</Variable>
-				<Variable Class="AuxVariable">
-					<Id>1776000400007</Id>
-					<Name><![CDATA[repairActive]]></Name>
-					<X>200</X><Y>620</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[(Wear > wearRepairThreshold && Budget >= 300) ? 1 : 0]]></Formula>
-						<Value><![CDATA[0]]></Value>
-						<Color>-4073239</Color>
-					</Properties>
-				</Variable>
-				<Variable Class="AuxVariable">
-					<Id>1776000400008</Id>
-					<Name><![CDATA[repairCostRate]]></Name>
-					<X>350</X><Y>620</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[(repairActive > 0.5) ? (Wear * 100 + 300) / max(1, Wear - 20) : 0]]></Formula>
-						<Value><![CDATA[0]]></Value>
-						<Color>-4073239</Color>
-					</Properties>
-				</Variable>
-				<Variable Class="AuxVariable">
-					<Id>1776000400011</Id>
-					<Name><![CDATA[investBudgetOk]]></Name>
-					<X>50</X><Y>690</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[(Budget > budgetReserve * 2 + 500 && repairActive < 0.5) ? 1 : 0]]></Formula>
-						<Value><![CDATA[0]]></Value>
-						<Color>-4073239</Color>
-					</Properties>
-				</Variable>
-				<Variable Class="AuxVariable">
-					<Id>1776000400012</Id>
-					<Name><![CDATA[attrInvestDecision]]></Name>
-					<X>200</X><Y>690</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[(investBudgetOk > 0.5 && Attractiveness < 40) ? 1 : 0]]></Formula>
-						<Value><![CDATA[0]]></Value>
-						<Color>-4073239</Color>
-					</Properties>
-				</Variable>
-				<Variable Class="AuxVariable">
-					<Id>1776000400013</Id>
-					<Name><![CDATA[infraInvestDecision]]></Name>
-					<X>350</X><Y>690</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties External="false" Constant="false" Array="false">
-						<Formula><![CDATA[(investBudgetOk > 0.5 && attrInvestDecision < 0.5 && Infrastructure < 60) ? 1 : 0]]></Formula>
-						<Value><![CDATA[0]]></Value>
-						<Color>-4073239</Color>
-					</Properties>
+					</Properties>                 
 				</Variable>
 			</Variables>
 			<Dependences>
 				<Link SourceId="1776000400004" TargetId="1776000200001" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-370</X><Y>-350</Y></Direction>
 					<Id>1776000500001</Id>
 					<Name><![CDATA[Visits - Revenue]]></Name>
 					<X>500</X><Y>550</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300004" TargetId="1776000200001" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-320</X><Y>150</Y></Direction>
 					<Id>1776000500002</Id>
 					<Name><![CDATA[ticketPrice - Revenue]]></Name>
 					<X>450</X><Y>50</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400005" TargetId="1776000200001" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-520</X><Y>-350</Y></Direction>
 					<Id>1776000500003</Id>
 					<Name><![CDATA[HotelStays - Revenue]]></Name>
 					<X>650</X><Y>550</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300005" TargetId="1776000200001" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-440</X><Y>150</Y></Direction>
 					<Id>1776000500004</Id>
 					<Name><![CDATA[hotelPrice - Revenue]]></Name>
 					<X>570</X><Y>50</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300006" TargetId="1776000200002" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-400</X><Y>150</Y></Direction>
 					<Id>1776000500005</Id>
 					<Name><![CDATA[monthlyExpenditures - FixedExpensesFlow]]></Name>
 					<X>700</X><Y>50</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400012" TargetId="1776000200003" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>100</X><Y>-490</Y></Direction>
 					<Id>1776000500049</Id>
 					<Name><![CDATA[attrInvestDecision - InvestmentCost]]></Name>
 					<X>200</X><Y>690</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400013" TargetId="1776000200003" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-50</X><Y>-490</Y></Direction>
 					<Id>1776000500050</Id>
 					<Name><![CDATA[infraInvestDecision - InvestmentCost]]></Name>
 					<X>350</X><Y>690</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400008" TargetId="1776000200004" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-50</X><Y>-420</Y></Direction>
 					<Id>1776000500007</Id>
 					<Name><![CDATA[repairCostRate - RepairCost]]></Name>
 					<X>350</X><Y>620</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400004" TargetId="1776000200005" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-70</X><Y>-350</Y></Direction>
 					<Id>1776000500008</Id>
 					<Name><![CDATA[Visits - WearGrowth]]></Name>
 					<X>500</X><Y>550</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400007" TargetId="1776000200006" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>400</X><Y>-420</Y></Direction>
 					<Id>1776000500009</Id>
 					<Name><![CDATA[repairActive - RepairRate]]></Name>
 					<X>200</X><Y>620</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400004" TargetId="1776000200007" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-370</X><Y>-210</Y></Direction>
 					<Id>1776000500010</Id>
 					<Name><![CDATA[Visits - ReviewEffect]]></Name>
 					<X>500</X><Y>550</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400006" TargetId="1776000200007" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>80</X><Y>-280</Y></Direction>
 					<Id>1776000500011</Id>
 					<Name><![CDATA[AvgReview - ReviewEffect]]></Name>
 					<X>50</X><Y>620</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400012" TargetId="1776000200008" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-70</X><Y>-230</Y></Direction>
 					<Id>1776000500012</Id>
 					<Name><![CDATA[attrInvestDecision - AttrInvestFlow]]></Name>
 					<X>200</X><Y>690</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400004" TargetId="1776000200009" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>100</X><Y>-150</Y></Direction>
 					<Id>1776000500013</Id>
 					<Name><![CDATA[Visits - InfraDegradation]]></Name>
 					<X>500</X><Y>550</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300002" TargetId="1776000200009" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>430</X><Y>350</Y></Direction>
 					<Id>1776000500014</Id>
 					<Name><![CDATA[museumCapacity - InfraDegradation]]></Name>
 					<X>170</X><Y>50</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400013" TargetId="1776000200010" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>80</X><Y>-290</Y></Direction>
 					<Id>1776000500015</Id>
 					<Name><![CDATA[infraInvestDecision - InfraInvestFlow]]></Name>
 					<X>350</X><Y>690</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100004" TargetId="1776000400002" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-400</X><Y>150</Y></Direction>
 					<Id>1776000500016</Id>
 					<Name><![CDATA[Infrastructure - P_visit]]></Name>
 					<X>600</X><Y>400</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100003" TargetId="1776000400002" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-100</X><Y>150</Y></Direction>
 					<Id>1776000500017</Id>
 					<Name><![CDATA[Attractiveness - P_visit]]></Name>
 					<X>300</X><Y>400</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100002" TargetId="1776000400002" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-400</X><Y>350</Y></Direction>
 					<Id>1776000500018</Id>
 					<Name><![CDATA[Wear - P_visit]]></Name>
 					<X>600</X><Y>200</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400001" TargetId="1776000400002" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>150</X><Y>0</Y></Direction>
 					<Id>1776000500019</Id>
 					<Name><![CDATA[SeasonFactor - P_visit]]></Name>
 					<X>50</X><Y>550</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400007" TargetId="1776000400003" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>150</X><Y>-70</Y></Direction>
 					<Id>1776000500020</Id>
 					<Name><![CDATA[repairActive - EffCapacity]]></Name>
 					<X>200</X><Y>620</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300002" TargetId="1776000400003" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>180</X><Y>500</Y></Direction>
 					<Id>1776000500021</Id>
 					<Name><![CDATA[museumCapacity - EffCapacity]]></Name>
 					<X>170</X><Y>50</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300001" TargetId="1776000400004" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>450</X><Y>500</Y></Direction>
 					<Id>1776000500022</Id>
 					<Name><![CDATA[N - Visits]]></Name>
 					<X>50</X><Y>50</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400002" TargetId="1776000400004" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>300</X><Y>0</Y></Direction>
 					<Id>1776000500023</Id>
 					<Name><![CDATA[P_visit - Visits]]></Name>
 					<X>200</X><Y>550</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400003" TargetId="1776000400004" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>150</X><Y>0</Y></Direction>
 					<Id>1776000500024</Id>
 					<Name><![CDATA[EffCapacity - Visits]]></Name>
 					<X>350</X><Y>550</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400004" TargetId="1776000400005" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>150</X><Y>0</Y></Direction>
 					<Id>1776000500025</Id>
 					<Name><![CDATA[Visits - HotelStays]]></Name>
 					<X>500</X><Y>550</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300003" TargetId="1776000400005" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>340</X><Y>500</Y></Direction>
 					<Id>1776000500026</Id>
 					<Name><![CDATA[hotelCapacity - HotelStays]]></Name>
 					<X>310</X><Y>50</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100004" TargetId="1776000400006" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-550</X><Y>220</Y></Direction>
 					<Id>1776000500027</Id>
 					<Name><![CDATA[Infrastructure - AvgReview]]></Name>
 					<X>600</X><Y>400</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100002" TargetId="1776000400006" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-550</X><Y>420</Y></Direction>
 					<Id>1776000500028</Id>
 					<Name><![CDATA[Wear - AvgReview]]></Name>
 					<X>600</X><Y>200</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100002" TargetId="1776000400007" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-400</X><Y>420</Y></Direction>
 					<Id>1776000500029</Id>
 					<Name><![CDATA[Wear - repairActive]]></Name>
 					<X>600</X><Y>200</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300008" TargetId="1776000400007" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-20</X><Y>520</Y></Direction>
 					<Id>1776000500030</Id>
 					<Name><![CDATA[wearRepairThreshold - repairActive]]></Name>
 					<X>220</X><Y>100</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100001" TargetId="1776000400007" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-100</X><Y>420</Y></Direction>
 					<Id>1776000500031</Id>
 					<Name><![CDATA[Budget - repairActive]]></Name>
 					<X>300</X><Y>200</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400007" TargetId="1776000400008" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>150</X><Y>0</Y></Direction>
 					<Id>1776000500032</Id>
 					<Name><![CDATA[repairActive - repairCostRate]]></Name>
 					<X>200</X><Y>620</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100002" TargetId="1776000400008" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-250</X><Y>420</Y></Direction>
 					<Id>1776000500051</Id>
 					<Name><![CDATA[Wear - repairCostRate]]></Name>
 					<X>600</X><Y>200</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100001" TargetId="1776000400011" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-250</X><Y>490</Y></Direction>
 					<Id>1776000500037</Id>
 					<Name><![CDATA[Budget - investBudgetOk]]></Name>
 					<X>300</X><Y>200</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300007" TargetId="1776000400011" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>0</X><Y>590</Y></Direction>
 					<Id>1776000500038</Id>
 					<Name><![CDATA[budgetReserve - investBudgetOk]]></Name>
 					<X>50</X><Y>100</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400007" TargetId="1776000400011" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-150</X><Y>70</Y></Direction>
 					<Id>1776000500039</Id>
 					<Name><![CDATA[repairActive - investBudgetOk]]></Name>
 					<X>200</X><Y>620</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400011" TargetId="1776000400012" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>150</X><Y>0</Y></Direction>
 					<Id>1776000500040</Id>
 					<Name><![CDATA[investBudgetOk - attrInvestDecision]]></Name>
 					<X>50</X><Y>690</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100003" TargetId="1776000400012" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-100</X><Y>290</Y></Direction>
 					<Id>1776000500041</Id>
 					<Name><![CDATA[Attractiveness - attrInvestDecision]]></Name>
 					<X>300</X><Y>400</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400011" TargetId="1776000400013" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>300</X><Y>0</Y></Direction>
 					<Id>1776000500042</Id>
 					<Name><![CDATA[investBudgetOk - infraInvestDecision]]></Name>
 					<X>50</X><Y>690</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400012" TargetId="1776000400013" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>150</X><Y>0</Y></Direction>
 					<Id>1776000500043</Id>
 					<Name><![CDATA[attrInvestDecision - infraInvestDecision]]></Name>
 					<X>200</X><Y>690</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100004" TargetId="1776000400013" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-250</X><Y>290</Y></Direction>
 					<Id>1776000500044</Id>
 					<Name><![CDATA[Infrastructure - infraInvestDecision]]></Name>
 					<X>600</X><Y>400</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100002" TargetId="1776000200006" Polarity="null">
-					<Height>-30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>-30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>0</X><Y>0</Y></Direction>
 					<Id>1776000500047</Id>
 					<Name><![CDATA[Wear - RepairRate]]></Name>
 					<X>600</X><Y>200</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100003" TargetId="1776000200007" Polarity="null">
-					<Height>30.0</Height><PolarityPosition>0.95</PolarityPosition>
+					<Height>30.0</Height>
+					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>-170</X><Y>-60</Y></Direction>
 					<Id>1776000500048</Id>
 					<Name><![CDATA[Attractiveness - ReviewEffect]]></Name>
 					<X>300</X><Y>400</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
-					<PublicFlag>false</PublicFlag><PresentationFlag>true</PresentationFlag><ShowLabel>false</ShowLabel>
-					<Color>-11832691</Color><LineWidth>1</LineWidth><Delay>false</Delay>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Color>-11832691</Color>
+					<LineWidth>1</LineWidth>
+					<Delay>false</Delay>
 				</Link>
 			</Dependences>
 			<AgentLinks>
