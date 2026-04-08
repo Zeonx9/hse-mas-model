@@ -42,23 +42,27 @@ def load_config(path: str) -> dict:
 
 
 def generate_combinations(config: dict) -> list[dict]:
-    params = config["parameters"]
+    params = dict(config["parameters"])
+    max_days = config.get("maxDays", [365])
+    if isinstance(max_days, int):
+        max_days = [max_days]
+    params["maxDays"] = max_days
     keys = list(params.keys())
-    values = [params[k] for k in keys]
+    values = [params[k] if isinstance(params[k], list) else [params[k]] for k in keys]
     combos = []
     for combo in itertools.product(*values):
         combos.append(dict(zip(keys, combo)))
     return combos
 
 
-def write_mas2j(combo: dict, max_days: int, csv_file: str, num_visitors: int):
+def write_mas2j(combo: dict, csv_file: str, num_visitors: int):
     content = MAS2J_TEMPLATE.format(
         museumCapacity=combo["museumCapacity"],
         hotelCapacity=combo["hotelCapacity"],
         ticketPrice=combo["ticketPrice"],
         hotelPrice=combo["hotelPrice"],
         monthlyExpenditures=combo["monthlyExpenditures"],
-        maxDays=max_days,
+        maxDays=combo["maxDays"],
         csvFile=csv_file,
         numVisitors=num_visitors,
     )
@@ -80,7 +84,6 @@ def main():
     config_path = sys.argv[1] if len(sys.argv) > 1 else str(DEFAULT_CONFIG)
     config = load_config(config_path)
 
-    max_days = config["maxDays"]
     runs_per = config.get("runsPerCombination", 1)
     csv_file = config["output"]
     num_visitors = config.get("numVisitors", 65)
@@ -98,7 +101,7 @@ def main():
     total_runs = len(combos) * runs_per
     print(f"Experiment config: {config_path}")
     print(f"  {len(combos)} parameter combinations x {runs_per} runs = {total_runs} total experiments")
-    print(f"  maxDays = {max_days}, numVisitors = {num_visitors}")
+    print(f"  numVisitors = {num_visitors}")
     print(f"  Output: {csv_file}")
     print()
 
@@ -112,7 +115,7 @@ def main():
             label = ", ".join(f"{k}={v}" for k, v in combo.items())
             print(f"[{completed}/{total_runs}] run={run_idx+1}/{runs_per} | {label}", end=" ... ", flush=True)
 
-            write_mas2j(combo, max_days, csv_abs, num_visitors)
+            write_mas2j(combo, csv_abs, num_visitors)
 
             run_start = time.time()
             try:

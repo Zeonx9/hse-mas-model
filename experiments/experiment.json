@@ -1,5 +1,5 @@
 {
-  "maxDays": 365,
+  "maxDays": [365, 730],
   "runsPerCombination": 3,
   "output": "experiments/results.csv",
   "parameters": {
