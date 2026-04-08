@@ -112,8 +112,8 @@
 				<Variable Class="AuxVariable">
 					<Id>1776000400001</Id>
 					<Name><![CDATA[SeasonFactor]]></Name>
-					<X>50</X><Y>550</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
+					<X>460</X><Y>450</Y>
+					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -127,8 +127,8 @@
 				<Variable Class="AuxVariable">
 					<Id>1776000400002</Id>
 					<Name><![CDATA[P_visit]]></Name>
-					<X>200</X><Y>550</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
+					<X>460</X><Y>350</Y>
+					<Label><X>20</X><Y>-5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -142,8 +142,8 @@
 				<Variable Class="AuxVariable">
 					<Id>1776000400003</Id>
 					<Name><![CDATA[EffCapacity]]></Name>
-					<X>350</X><Y>550</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
+					<X>760</X><Y>500</Y>
+					<Label><X>-25</X><Y>30</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -157,7 +157,7 @@
 				<Variable Class="AuxVariable">
 					<Id>1776000400004</Id>
 					<Name><![CDATA[Visits]]></Name>
-					<X>500</X><Y>550</Y>
+					<X>340</X><Y>360</Y>
 					<Label><X>0</X><Y>-20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -172,8 +172,8 @@
 				<Variable Class="AuxVariable">
 					<Id>1776000400005</Id>
 					<Name><![CDATA[HotelStays]]></Name>
-					<X>650</X><Y>550</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
+					<X>170</X><Y>270</Y>
+					<Label><X>-20</X><Y>-15</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -187,8 +187,8 @@
 				<Variable Class="AuxVariable">
 					<Id>1776000400006</Id>
 					<Name><![CDATA[AvgReview]]></Name>
-					<X>50</X><Y>620</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
+					<X>510</X><Y>390</Y>
+					<Label><X>5</X><Y>20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -202,8 +202,8 @@
 				<Variable Class="AuxVariable">
 					<Id>1776000400007</Id>
 					<Name><![CDATA[repairActive]]></Name>
-					<X>200</X><Y>620</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
+					<X>750</X><Y>270</Y>
+					<Label><X>-45</X><Y>15</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -217,8 +217,8 @@
 				<Variable Class="AuxVariable">
 					<Id>1776000400008</Id>
 					<Name><![CDATA[repairCostRate]]></Name>
-					<X>350</X><Y>620</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
+					<X>650</X><Y>230</Y>
+					<Label><X>-45</X><Y>20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -232,7 +232,7 @@
 				<Variable Class="AuxVariable">
 					<Id>1776000400011</Id>
 					<Name><![CDATA[investBudgetOk]]></Name>
-					<X>50</X><Y>690</Y>
+					<X>280</X><Y>250</Y>
 					<Label><X>0</X><Y>-20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -247,8 +247,8 @@
 				<Variable Class="AuxVariable">
 					<Id>1776000400012</Id>
 					<Name><![CDATA[attrInvestDecision]]></Name>
-					<X>200</X><Y>690</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
+					<X>220</X><Y>370</Y>
+					<Label><X>-110</X><Y>-5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -262,8 +262,8 @@
 				<Variable Class="AuxVariable">
 					<Id>1776000400013</Id>
 					<Name><![CDATA[infraInvestDecision]]></Name>
-					<X>350</X><Y>690</Y>
-					<Label><X>0</X><Y>-20</Y></Label>
+					<X>400</X><Y>310</Y>
+					<Label><X>-30</X><Y>-35</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -277,7 +277,7 @@
 				<Variable Class="StockVariable">
 					<Id>1776000100001</Id>
 					<Name><![CDATA[Budget]]></Name>
-					<X>300</X><Y>200</Y>
+					<X>300</X><Y>140</Y>
 					<Label><X>-20</X><Y>-5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -293,7 +293,7 @@
 				<Variable Class="StockVariable">
 					<Id>1776000100002</Id>
 					<Name><![CDATA[Wear]]></Name>
-					<X>600</X><Y>200</Y>
+					<X>750</X><Y>140</Y>
 					<Label><X>-15</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -309,7 +309,7 @@
 				<Variable Class="StockVariable">
 					<Id>1776000100003</Id>
 					<Name><![CDATA[Attractiveness]]></Name>
-					<X>300</X><Y>400</Y>
+					<X>280</X><Y>480</Y>
 					<Label><X>-35</X><Y>-5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -325,7 +325,7 @@
 				<Variable Class="StockVariable">
 					<Id>1776000100004</Id>
 					<Name><![CDATA[Infrastructure]]></Name>
-					<X>600</X><Y>400</Y>
+					<X>740</X><Y>340</Y>
 					<Label><X>-35</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -341,7 +341,7 @@
 				<Variable Class="Flow">
 					<Id>1776000200001</Id>
 					<Name><![CDATA[Revenue]]></Name>
-					<X>130</X><Y>200</Y>
+					<X>130</X><Y>140</Y>
 					<Label><X>-40</X><Y>-30</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -360,7 +360,7 @@
 				<Variable Class="Flow">
 					<Id>1776000200002</Id>
 					<Name><![CDATA[FixedExpensesFlow]]></Name>
-					<X>300</X><Y>200</Y>
+					<X>300</X><Y>140</Y>
 					<Label><X>15</X><Y>-25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -379,7 +379,7 @@
 				<Variable Class="Flow">
 					<Id>1776000200003</Id>
 					<Name><![CDATA[InvestmentCost]]></Name>
-					<X>300</X><Y>200</Y>
+					<X>300</X><Y>140</Y>
 					<Label><X>15</X><Y>15</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -390,16 +390,16 @@
 						<ValveIndex>1</ValveIndex>
 						<Points>
 							<Point><X>0</X><Y>0</Y></Point>
-							<Point><X>80</X><Y>40</Y></Point>
-							<Point><X>190</X><Y>40</Y></Point>
+							<Point><X>100</X><Y>0</Y></Point>
+							<Point><X>190</X><Y>0</Y></Point>
 						</Points>
 					</Properties>
 				</Variable>
 				<Variable Class="Flow">
 					<Id>1776000200004</Id>
 					<Name><![CDATA[RepairCost]]></Name>
-					<X>300</X><Y>200</Y>
-					<Label><X>15</X><Y>50</Y></Label>
+					<X>300</X><Y>140</Y>
+					<Label><X>-5</X><Y>25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -409,15 +409,15 @@
 						<ValveIndex>1</ValveIndex>
 						<Points>
 							<Point><X>0</X><Y>0</Y></Point>
-							<Point><X>100</X><Y>80</Y></Point>
-							<Point><X>210</X><Y>80</Y></Point>
+							<Point><X>140</X><Y>60</Y></Point>
+							<Point><X>230</X><Y>60</Y></Point>
 						</Points>
 					</Properties>
 				</Variable>
 				<Variable Class="Flow">
 					<Id>1776000200005</Id>
 					<Name><![CDATA[WearGrowth]]></Name>
-					<X>430</X><Y>200</Y>
+					<X>580</X><Y>140</Y>
 					<Label><X>-45</X><Y>25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -436,7 +436,7 @@
 				<Variable Class="Flow">
 					<Id>1776000200006</Id>
 					<Name><![CDATA[RepairRate]]></Name>
-					<X>600</X><Y>200</Y>
+					<X>750</X><Y>140</Y>
 					<Label><X>15</X><Y>-20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -455,8 +455,8 @@
 				<Variable Class="Flow">
 					<Id>1776000200007</Id>
 					<Name><![CDATA[ReviewEffect]]></Name>
-					<X>130</X><Y>340</Y>
-					<Label><X>-50</X><Y>20</Y></Label>
+					<X>60</X><Y>420</Y>
+					<Label><X>-85</X><Y>-20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -466,15 +466,15 @@
 						<ValveIndex>1</ValveIndex>
 						<Points>
 							<Point><X>0</X><Y>0</Y></Point>
-							<Point><X>60</X><Y>0</Y></Point>
-							<Point><X>170</X><Y>60</Y></Point>
+							<Point><X>90</X><Y>0</Y></Point>
+							<Point><X>220</X><Y>60</Y></Point>
 						</Points>
 					</Properties>
 				</Variable>
 				<Variable Class="Flow">
 					<Id>1776000200008</Id>
 					<Name><![CDATA[AttrInvestFlow]]></Name>
-					<X>130</X><Y>460</Y>
+					<X>50</X><Y>500</Y>
 					<Label><X>-60</X><Y>25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -485,15 +485,15 @@
 						<ValveIndex>1</ValveIndex>
 						<Points>
 							<Point><X>0</X><Y>0</Y></Point>
-							<Point><X>60</X><Y>0</Y></Point>
-							<Point><X>170</X><Y>-60</Y></Point>
+							<Point><X>100</X><Y>0</Y></Point>
+							<Point><X>230</X><Y>-20</Y></Point>
 						</Points>
 					</Properties>
 				</Variable>
 				<Variable Class="Flow">
 					<Id>1776000200009</Id>
 					<Name><![CDATA[InfraDegradation]]></Name>
-					<X>600</X><Y>400</Y>
+					<X>740</X><Y>340</Y>
 					<Label><X>15</X><Y>-30</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -512,7 +512,7 @@
 				<Variable Class="Flow">
 					<Id>1776000200010</Id>
 					<Name><![CDATA[InfraInvestFlow]]></Name>
-					<X>430</X><Y>400</Y>
+					<X>580</X><Y>340</Y>
 					<Label><X>-55</X><Y>25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -523,15 +523,15 @@
 						<ValveIndex>1</ValveIndex>
 						<Points>
 							<Point><X>0</X><Y>0</Y></Point>
-							<Point><X>60</X><Y>0</Y></Point>
-							<Point><X>170</X><Y>0</Y></Point>
+							<Point><X>50</X><Y>0</Y></Point>
+							<Point><X>160</X><Y>0</Y></Point>
 						</Points>
 					</Properties>
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1776000300001</Id>
 					<Name><![CDATA[N]]></Name>
-					<X>50</X><Y>50</Y>
+					<X>320</X><Y>400</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -555,7 +555,7 @@
 				<Variable Class="Parameter">
 					<Id>1776000300002</Id>
 					<Name><![CDATA[museumCapacity]]></Name>
-					<X>170</X><Y>50</Y>
+					<X>870</X><Y>480</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -579,7 +579,7 @@
 				<Variable Class="Parameter">
 					<Id>1776000300003</Id>
 					<Name><![CDATA[hotelCapacity]]></Name>
-					<X>310</X><Y>50</Y>
+					<X>80</X><Y>240</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -603,8 +603,8 @@
 				<Variable Class="Parameter">
 					<Id>1776000300004</Id>
 					<Name><![CDATA[ticketPrice]]></Name>
-					<X>450</X><Y>50</Y>
-					<Label><X>10</X><Y>0</Y></Label>
+					<X>90</X><Y>210</Y>
+					<Label><X>20</X><Y>5</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
@@ -627,7 +627,7 @@
 				<Variable Class="Parameter">
 					<Id>1776000300005</Id>
 					<Name><![CDATA[hotelPrice]]></Name>
-					<X>570</X><Y>50</Y>
+					<X>90</X><Y>170</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -651,7 +651,7 @@
 				<Variable Class="Parameter">
 					<Id>1776000300006</Id>
 					<Name><![CDATA[monthlyExpenditures]]></Name>
-					<X>700</X><Y>50</Y>
+					<X>390</X><Y>30</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -675,7 +675,7 @@
 				<Variable Class="Parameter">
 					<Id>1776000300007</Id>
 					<Name><![CDATA[budgetReserve]]></Name>
-					<X>50</X><Y>100</Y>
+					<X>240</X><Y>190</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -699,7 +699,7 @@
 				<Variable Class="Parameter">
 					<Id>1776000300008</Id>
 					<Name><![CDATA[wearRepairThreshold]]></Name>
-					<X>220</X><Y>100</Y>
+					<X>860</X><Y>250</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -723,12 +723,12 @@
 			</Variables>
 			<Dependences>
 				<Link SourceId="1776000400004" TargetId="1776000200001" Polarity="null">
-					<Height>30.0</Height>
+					<Height>55.172</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-370</X><Y>-350</Y></Direction>
+					<Direction><X>-150</X><Y>-220</Y></Direction>
 					<Id>1776000500001</Id>
 					<Name><![CDATA[Visits - Revenue]]></Name>
-					<X>500</X><Y>550</Y>
+					<X>340</X><Y>360</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -740,10 +740,10 @@
 				<Link SourceId="1776000300004" TargetId="1776000200001" Polarity="null">
 					<Height>-30.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-320</X><Y>150</Y></Direction>
+					<Direction><X>100</X><Y>-70</Y></Direction>
 					<Id>1776000500002</Id>
 					<Name><![CDATA[ticketPrice - Revenue]]></Name>
-					<X>450</X><Y>50</Y>
+					<X>90</X><Y>210</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -753,12 +753,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400005" TargetId="1776000200001" Polarity="null">
-					<Height>30.0</Height>
+					<Height>0.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-520</X><Y>-350</Y></Direction>
+					<Direction><X>20</X><Y>-130</Y></Direction>
 					<Id>1776000500003</Id>
 					<Name><![CDATA[HotelStays - Revenue]]></Name>
-					<X>650</X><Y>550</Y>
+					<X>170</X><Y>270</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -770,10 +770,10 @@
 				<Link SourceId="1776000300005" TargetId="1776000200001" Polarity="null">
 					<Height>-30.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-440</X><Y>150</Y></Direction>
+					<Direction><X>100</X><Y>-30</Y></Direction>
 					<Id>1776000500004</Id>
 					<Name><![CDATA[hotelPrice - Revenue]]></Name>
-					<X>570</X><Y>50</Y>
+					<X>90</X><Y>170</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -783,12 +783,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300006" TargetId="1776000200002" Polarity="null">
-					<Height>30.0</Height>
+					<Height>-30.149</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-400</X><Y>150</Y></Direction>
+					<Direction><X>-10</X><Y>60</Y></Direction>
 					<Id>1776000500005</Id>
 					<Name><![CDATA[monthlyExpenditures - FixedExpensesFlow]]></Name>
-					<X>700</X><Y>50</Y>
+					<X>390</X><Y>30</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -798,12 +798,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400012" TargetId="1776000200003" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>-43.612</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>100</X><Y>-490</Y></Direction>
+					<Direction><X>160</X><Y>-190</Y></Direction>
 					<Id>1776000500049</Id>
 					<Name><![CDATA[attrInvestDecision - InvestmentCost]]></Name>
-					<X>200</X><Y>690</Y>
+					<X>220</X><Y>370</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -813,12 +813,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400013" TargetId="1776000200003" Polarity="null">
-					<Height>30.0</Height>
+					<Height>-8.004</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-50</X><Y>-490</Y></Direction>
+					<Direction><X>0</X><Y>-170</Y></Direction>
 					<Id>1776000500050</Id>
 					<Name><![CDATA[infraInvestDecision - InvestmentCost]]></Name>
-					<X>350</X><Y>690</Y>
+					<X>400</X><Y>310</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -828,12 +828,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400008" TargetId="1776000200004" Polarity="null">
-					<Height>30.0</Height>
+					<Height>0.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-50</X><Y>-420</Y></Direction>
+					<Direction><X>-210</X><Y>-30</Y></Direction>
 					<Id>1776000500007</Id>
 					<Name><![CDATA[repairCostRate - RepairCost]]></Name>
-					<X>350</X><Y>620</Y>
+					<X>650</X><Y>230</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -843,12 +843,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400004" TargetId="1776000200005" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>-22.203</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-70</X><Y>-350</Y></Direction>
+					<Direction><X>300</X><Y>-220</Y></Direction>
 					<Id>1776000500008</Id>
 					<Name><![CDATA[Visits - WearGrowth]]></Name>
-					<X>500</X><Y>550</Y>
+					<X>340</X><Y>360</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -858,12 +858,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400007" TargetId="1776000200006" Polarity="null">
-					<Height>30.0</Height>
+					<Height>-46.638</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>400</X><Y>-420</Y></Direction>
+					<Direction><X>100</X><Y>-130</Y></Direction>
 					<Id>1776000500009</Id>
 					<Name><![CDATA[repairActive - RepairRate]]></Name>
-					<X>200</X><Y>620</Y>
+					<X>750</X><Y>270</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -873,12 +873,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400004" TargetId="1776000200007" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>7.555</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-370</X><Y>-210</Y></Direction>
+					<Direction><X>-190</X><Y>60</Y></Direction>
 					<Id>1776000500010</Id>
 					<Name><![CDATA[Visits - ReviewEffect]]></Name>
-					<X>500</X><Y>550</Y>
+					<X>340</X><Y>360</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -888,12 +888,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400006" TargetId="1776000200007" Polarity="null">
-					<Height>30.0</Height>
+					<Height>23.171</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>80</X><Y>-280</Y></Direction>
+					<Direction><X>-360</X><Y>30</Y></Direction>
 					<Id>1776000500011</Id>
 					<Name><![CDATA[AvgReview - ReviewEffect]]></Name>
-					<X>50</X><Y>620</Y>
+					<X>510</X><Y>390</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -903,12 +903,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400012" TargetId="1776000200008" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>-137.333</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-70</X><Y>-230</Y></Direction>
+					<Direction><X>-50</X><Y>170</Y></Direction>
 					<Id>1776000500012</Id>
 					<Name><![CDATA[attrInvestDecision - AttrInvestFlow]]></Name>
-					<X>200</X><Y>690</Y>
+					<X>220</X><Y>370</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -918,12 +918,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400004" TargetId="1776000200009" Polarity="null">
-					<Height>30.0</Height>
+					<Height>-153.08</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>100</X><Y>-150</Y></Direction>
+					<Direction><X>510</X><Y>-20</Y></Direction>
 					<Id>1776000500013</Id>
 					<Name><![CDATA[Visits - InfraDegradation]]></Name>
-					<X>500</X><Y>550</Y>
+					<X>340</X><Y>360</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -935,10 +935,10 @@
 				<Link SourceId="1776000300002" TargetId="1776000200009" Polarity="null">
 					<Height>-30.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>430</X><Y>350</Y></Direction>
+					<Direction><X>-20</X><Y>-140</Y></Direction>
 					<Id>1776000500014</Id>
 					<Name><![CDATA[museumCapacity - InfraDegradation]]></Name>
-					<X>170</X><Y>50</Y>
+					<X>870</X><Y>480</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -948,12 +948,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400013" TargetId="1776000200010" Polarity="null">
-					<Height>30.0</Height>
+					<Height>10.045</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>80</X><Y>-290</Y></Direction>
+					<Direction><X>230</X><Y>30</Y></Direction>
 					<Id>1776000500015</Id>
 					<Name><![CDATA[infraInvestDecision - InfraInvestFlow]]></Name>
-					<X>350</X><Y>690</Y>
+					<X>400</X><Y>310</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -963,12 +963,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100004" TargetId="1776000400002" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>102.476</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-400</X><Y>150</Y></Direction>
+					<Direction><X>-280</X><Y>10</Y></Direction>
 					<Id>1776000500016</Id>
 					<Name><![CDATA[Infrastructure - P_visit]]></Name>
-					<X>600</X><Y>400</Y>
+					<X>740</X><Y>340</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -978,12 +978,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100003" TargetId="1776000400002" Polarity="null">
-					<Height>30.0</Height>
+					<Height>-33.381</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-100</X><Y>150</Y></Direction>
+					<Direction><X>180</X><Y>-130</Y></Direction>
 					<Id>1776000500017</Id>
 					<Name><![CDATA[Attractiveness - P_visit]]></Name>
-					<X>300</X><Y>400</Y>
+					<X>280</X><Y>480</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -993,12 +993,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100002" TargetId="1776000400002" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>-23.12</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-400</X><Y>350</Y></Direction>
+					<Direction><X>-290</X><Y>210</Y></Direction>
 					<Id>1776000500018</Id>
 					<Name><![CDATA[Wear - P_visit]]></Name>
-					<X>600</X><Y>200</Y>
+					<X>750</X><Y>140</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1008,12 +1008,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400001" TargetId="1776000400002" Polarity="null">
-					<Height>30.0</Height>
+					<Height>7.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>150</X><Y>0</Y></Direction>
+					<Direction><X>0</X><Y>-100</Y></Direction>
 					<Id>1776000500019</Id>
 					<Name><![CDATA[SeasonFactor - P_visit]]></Name>
-					<X>50</X><Y>550</Y>
+					<X>460</X><Y>450</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1022,13 +1022,12 @@
 					<LineWidth>1</LineWidth>
 					<Delay>false</Delay>
 				</Link>
-				<Link SourceId="1776000400007" TargetId="1776000400003" Polarity="null">
-					<Height>-30.0</Height>
+				<Link Polarity="null">
+					<Height>62.927</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>150</X><Y>-70</Y></Direction>
+					<Direction><X>10</X><Y>230</Y></Direction>
 					<Id>1776000500020</Id>
-					<Name><![CDATA[repairActive - EffCapacity]]></Name>
-					<X>200</X><Y>620</Y>
+					<X>760</X><Y>270</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1040,10 +1039,10 @@
 				<Link SourceId="1776000300002" TargetId="1776000400003" Polarity="null">
 					<Height>30.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>180</X><Y>500</Y></Direction>
+					<Direction><X>-110</X><Y>20</Y></Direction>
 					<Id>1776000500021</Id>
 					<Name><![CDATA[museumCapacity - EffCapacity]]></Name>
-					<X>170</X><Y>50</Y>
+					<X>870</X><Y>480</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1053,12 +1052,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300001" TargetId="1776000400004" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>5.816</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>450</X><Y>500</Y></Direction>
+					<Direction><X>20</X><Y>-40</Y></Direction>
 					<Id>1776000500022</Id>
 					<Name><![CDATA[N - Visits]]></Name>
-					<X>50</X><Y>50</Y>
+					<X>320</X><Y>400</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1068,12 +1067,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400002" TargetId="1776000400004" Polarity="null">
-					<Height>30.0</Height>
+					<Height>3.715</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>300</X><Y>0</Y></Direction>
+					<Direction><X>-120</X><Y>10</Y></Direction>
 					<Id>1776000500023</Id>
 					<Name><![CDATA[P_visit - Visits]]></Name>
-					<X>200</X><Y>550</Y>
+					<X>460</X><Y>350</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1083,12 +1082,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400003" TargetId="1776000400004" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>114.806</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>150</X><Y>0</Y></Direction>
+					<Direction><X>-420</X><Y>-140</Y></Direction>
 					<Id>1776000500024</Id>
 					<Name><![CDATA[EffCapacity - Visits]]></Name>
-					<X>350</X><Y>550</Y>
+					<X>760</X><Y>500</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1100,10 +1099,10 @@
 				<Link SourceId="1776000400004" TargetId="1776000400005" Polarity="null">
 					<Height>30.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>150</X><Y>0</Y></Direction>
+					<Direction><X>-170</X><Y>-90</Y></Direction>
 					<Id>1776000500025</Id>
 					<Name><![CDATA[Visits - HotelStays]]></Name>
-					<X>500</X><Y>550</Y>
+					<X>340</X><Y>360</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1113,12 +1112,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300003" TargetId="1776000400005" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>-22.013</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>340</X><Y>500</Y></Direction>
+					<Direction><X>90</X><Y>30</Y></Direction>
 					<Id>1776000500026</Id>
 					<Name><![CDATA[hotelCapacity - HotelStays]]></Name>
-					<X>310</X><Y>50</Y>
+					<X>80</X><Y>240</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1130,10 +1129,10 @@
 				<Link SourceId="1776000100004" TargetId="1776000400006" Polarity="null">
 					<Height>30.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-550</X><Y>220</Y></Direction>
+					<Direction><X>-230</X><Y>50</Y></Direction>
 					<Id>1776000500027</Id>
 					<Name><![CDATA[Infrastructure - AvgReview]]></Name>
-					<X>600</X><Y>400</Y>
+					<X>740</X><Y>340</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1143,12 +1142,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100002" TargetId="1776000400006" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>-32.461</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-550</X><Y>420</Y></Direction>
+					<Direction><X>-240</X><Y>250</Y></Direction>
 					<Id>1776000500028</Id>
 					<Name><![CDATA[Wear - AvgReview]]></Name>
-					<X>600</X><Y>200</Y>
+					<X>750</X><Y>140</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1158,12 +1157,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100002" TargetId="1776000400007" Polarity="null">
-					<Height>30.0</Height>
+					<Height>12.069</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-400</X><Y>420</Y></Direction>
+					<Direction><X>0</X><Y>130</Y></Direction>
 					<Id>1776000500029</Id>
 					<Name><![CDATA[Wear - repairActive]]></Name>
-					<X>600</X><Y>200</Y>
+					<X>750</X><Y>140</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1173,12 +1172,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300008" TargetId="1776000400007" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>8.761</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-20</X><Y>520</Y></Direction>
+					<Direction><X>-110</X><Y>20</Y></Direction>
 					<Id>1776000500030</Id>
 					<Name><![CDATA[wearRepairThreshold - repairActive]]></Name>
-					<X>220</X><Y>100</Y>
+					<X>860</X><Y>250</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1188,12 +1187,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100001" TargetId="1776000400007" Polarity="null">
-					<Height>30.0</Height>
+					<Height>90.593</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-100</X><Y>420</Y></Direction>
+					<Direction><X>450</X><Y>130</Y></Direction>
 					<Id>1776000500031</Id>
 					<Name><![CDATA[Budget - repairActive]]></Name>
-					<X>300</X><Y>200</Y>
+					<X>300</X><Y>140</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1203,12 +1202,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400007" TargetId="1776000400008" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>0.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>150</X><Y>0</Y></Direction>
+					<Direction><X>-100</X><Y>-40</Y></Direction>
 					<Id>1776000500032</Id>
 					<Name><![CDATA[repairActive - repairCostRate]]></Name>
-					<X>200</X><Y>620</Y>
+					<X>750</X><Y>270</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1218,12 +1217,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100002" TargetId="1776000400008" Polarity="null">
-					<Height>30.0</Height>
+					<Height>8.848</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-250</X><Y>420</Y></Direction>
+					<Direction><X>-100</X><Y>90</Y></Direction>
 					<Id>1776000500051</Id>
 					<Name><![CDATA[Wear - repairCostRate]]></Name>
-					<X>600</X><Y>200</Y>
+					<X>750</X><Y>140</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1235,10 +1234,10 @@
 				<Link SourceId="1776000100001" TargetId="1776000400011" Polarity="null">
 					<Height>30.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-250</X><Y>490</Y></Direction>
+					<Direction><X>-20</X><Y>110</Y></Direction>
 					<Id>1776000500037</Id>
 					<Name><![CDATA[Budget - investBudgetOk]]></Name>
-					<X>300</X><Y>200</Y>
+					<X>300</X><Y>140</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1248,12 +1247,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000300007" TargetId="1776000400011" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>-9.908</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>0</X><Y>590</Y></Direction>
+					<Direction><X>40</X><Y>60</Y></Direction>
 					<Id>1776000500038</Id>
 					<Name><![CDATA[budgetReserve - investBudgetOk]]></Name>
-					<X>50</X><Y>100</Y>
+					<X>240</X><Y>190</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1263,12 +1262,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400007" TargetId="1776000400011" Polarity="null">
-					<Height>30.0</Height>
+					<Height>0.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-150</X><Y>70</Y></Direction>
+					<Direction><X>-470</X><Y>-20</Y></Direction>
 					<Id>1776000500039</Id>
 					<Name><![CDATA[repairActive - investBudgetOk]]></Name>
-					<X>200</X><Y>620</Y>
+					<X>750</X><Y>270</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1280,10 +1279,10 @@
 				<Link SourceId="1776000400011" TargetId="1776000400012" Polarity="null">
 					<Height>-30.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>150</X><Y>0</Y></Direction>
+					<Direction><X>-60</X><Y>120</Y></Direction>
 					<Id>1776000500040</Id>
 					<Name><![CDATA[investBudgetOk - attrInvestDecision]]></Name>
-					<X>50</X><Y>690</Y>
+					<X>280</X><Y>250</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1293,12 +1292,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100003" TargetId="1776000400012" Polarity="null">
-					<Height>30.0</Height>
+					<Height>-20.841</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-100</X><Y>290</Y></Direction>
+					<Direction><X>-60</X><Y>-110</Y></Direction>
 					<Id>1776000500041</Id>
 					<Name><![CDATA[Attractiveness - attrInvestDecision]]></Name>
-					<X>300</X><Y>400</Y>
+					<X>280</X><Y>480</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1308,12 +1307,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400011" TargetId="1776000400013" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>-2.884</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>300</X><Y>0</Y></Direction>
+					<Direction><X>120</X><Y>60</Y></Direction>
 					<Id>1776000500042</Id>
 					<Name><![CDATA[investBudgetOk - infraInvestDecision]]></Name>
-					<X>50</X><Y>690</Y>
+					<X>280</X><Y>250</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1323,12 +1322,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000400012" TargetId="1776000400013" Polarity="null">
-					<Height>30.0</Height>
+					<Height>0.0</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>150</X><Y>0</Y></Direction>
+					<Direction><X>180</X><Y>-60</Y></Direction>
 					<Id>1776000500043</Id>
 					<Name><![CDATA[attrInvestDecision - infraInvestDecision]]></Name>
-					<X>200</X><Y>690</Y>
+					<X>220</X><Y>370</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1338,12 +1337,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100004" TargetId="1776000400013" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>-25.739</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-250</X><Y>290</Y></Direction>
+					<Direction><X>-340</X><Y>-30</Y></Direction>
 					<Id>1776000500044</Id>
 					<Name><![CDATA[Infrastructure - infraInvestDecision]]></Name>
-					<X>600</X><Y>400</Y>
+					<X>740</X><Y>340</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1353,12 +1352,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100002" TargetId="1776000200006" Polarity="null">
-					<Height>-30.0</Height>
+					<Height>45.04</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>0</X><Y>0</Y></Direction>
+					<Direction><X>100</X><Y>0</Y></Direction>
 					<Id>1776000500047</Id>
 					<Name><![CDATA[Wear - RepairRate]]></Name>
-					<X>600</X><Y>200</Y>
+					<X>750</X><Y>140</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1368,12 +1367,12 @@
 					<Delay>false</Delay>
 				</Link>
 				<Link SourceId="1776000100003" TargetId="1776000200007" Polarity="null">
-					<Height>30.0</Height>
+					<Height>33.785</Height>
 					<PolarityPosition>0.95</PolarityPosition>
-					<Direction><X>-170</X><Y>-60</Y></Direction>
+					<Direction><X>-90</X><Y>-150</Y></Direction>
 					<Id>1776000500048</Id>
 					<Name><![CDATA[Attractiveness - ReviewEffect]]></Name>
-					<X>300</X><Y>400</Y>
+					<X>280</X><Y>480</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
