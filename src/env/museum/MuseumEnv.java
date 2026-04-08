@@ -3,6 +3,10 @@ package museum;
 import jason.asSyntax.*;
 import jason.environment.TimeSteppedEnvironment;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -16,6 +20,10 @@ public class MuseumEnv extends TimeSteppedEnvironment {
     private int ticketPrice = 100;
     private int hotelPrice = 50;
     private int monthlyExpenditures = 7000;
+    private int maxDays = 0;
+    private String csvFile = "";
+    private boolean experimentMode = false;
+    private int numVisitors = 0;
 
     private int day = 0;
     private String season = "winter";
@@ -69,6 +77,16 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         if (args.length >= 5) {
             monthlyExpenditures = Integer.parseInt(args[4]);
         }
+        if (args.length >= 6) {
+            maxDays = Integer.parseInt(args[5]);
+        }
+        if (args.length >= 7) {
+            csvFile = args[6].replace("\"", "");
+        }
+        if (args.length >= 8) {
+            numVisitors = Integer.parseInt(args[7]);
+        }
+        experimentMode = maxDays > 0 && !csvFile.isEmpty();
 
         museumSlotsFree = museumCapacity;
         hotelRoomsFree = hotelCapacity;
@@ -80,7 +98,8 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         logger.info("Museum cap: " + museumCapacity
                 + " | Hotel cap: " + hotelCapacity
                 + " | Ticket: " + ticketPrice + " | Hotel price: " + hotelPrice
-                + " | Monthly expenses: " + monthlyExpenditures);
+                + " | Monthly expenses: " + monthlyExpenditures
+                + (experimentMode ? " | EXPERIMENT: " + maxDays + " days -> " + csvFile : ""));
     }
 
     @Override
@@ -102,6 +121,17 @@ public class MuseumEnv extends TimeSteppedEnvironment {
                     reviewTag, budget, repairTag));
         }
 
+        if (experimentMode && step >= maxDays) {
+            writeCsvRow();
+            new Thread(() -> {
+                try {
+                    Thread.sleep(200);
+                    getEnvironmentInfraTier().getRuntimeServices().stopMAS();
+                } catch (Exception e) { e.printStackTrace(); }
+            }).start();
+            return;
+        }
+
         day = step;
         updateSeason();
         applyMonthlyExpenditures();
@@ -110,7 +140,9 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         resetDailyCounters();
         applyWear();
         updatePercepts();
-        try { Thread.sleep(200); } catch (InterruptedException ignored) {}
+        if (!experimentMode) {
+            try { Thread.sleep(200); } catch (InterruptedException ignored) {}
+        }
     }
 
     @Override
@@ -322,5 +354,37 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         addPercept(Literal.parseLiteral("repairing(" + (repairing ? "yes" : "no") + ")"));
 
         addPercept("manager", Literal.parseLiteral("budget(" + String.format("%.0f", budget) + ")"));
+    }
+
+    private static final String CSV_HEADER = String.join(",",
+            "museumCapacity", "hotelCapacity", "ticketPrice", "hotelPrice",
+            "monthlyExpenditures", "numVisitors", "maxDays",
+            "totalVisits", "totalHotelStays", "totalRefusals", "totalRepairs",
+            "finalWear", "finalAttractiveness", "finalBudget",
+            "finalMobileNetwork", "finalPaymentSystem", "finalTransportAccess",
+            "finalInternetQuality", "finalNavigationAccess", "finalServiceAvailability",
+            "finalAvgReview");
+
+    private void writeCsvRow() {
+        try {
+            File f = new File(csvFile);
+            boolean writeHeader = !f.exists() || f.length() == 0;
+            if (f.getParentFile() != null) f.getParentFile().mkdirs();
+            try (PrintWriter pw = new PrintWriter(new FileWriter(f, true))) {
+                if (writeHeader) pw.println(CSV_HEADER);
+                pw.printf(Locale.US,
+                        "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f%n",
+                        museumCapacity, hotelCapacity, ticketPrice, hotelPrice,
+                        monthlyExpenditures, numVisitors, maxDays,
+                        totalVisits, totalHotelStays, totalRefusals, totalRepairs,
+                        wear, attractiveness, budget,
+                        mobileNetwork, paymentSystem, transportAccess,
+                        internetQuality, navigationAccess, serviceAvailability,
+                        lastAvgReview);
+            }
+            logger.info("CSV row written to " + csvFile);
+        } catch (IOException e) {
+            logger.severe("Failed to write CSV: " + e.getMessage());
+        }
     }
 }
