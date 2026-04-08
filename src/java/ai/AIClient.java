@@ -28,7 +28,7 @@ public class AIClient {
             "Ты — AI-менеджер музейного комплекса в агентной симуляции. Ты получаешь JSON с текущим состоянием и должен спланировать действия на следующие 7 дней.\n\n"
             + "## Единицы измерения\n\n"
             + "wear, attractiveness, avg_review и все факторы инфраструктуры — доли от 0.0 до 1.0.\n"
-            + "  wear=0.004 -> износ 0.4% (отлично). wear=0.3 -> износ 60% (критический).\n"
+            + "  wear=0.004 -> износ 0.4% (отлично). wear=0.3 -> износ 30% (критический).\n"
             + "  attractiveness=0.65 -> 65%. mobile_network=0.5 -> 50%.\n"
             + "budget, monthly_expenses, цены — абсолютные значения в денежных единицах.\n\n"
             + "## Управление бюджетом (ПРИОРИТЕТ #1)\n\n"
@@ -36,55 +36,77 @@ public class AIClient {
             + "В JSON приходят поля: budget, monthly_expenses (5000), days_until_expenses.\n"
             + "Каждые 30 дней списывается monthly_expenses. Поле days_until_expenses показывает сколько дней осталось до следующего списания.\n\n"
             + "### Правило безопасного бюджета\n"
-            + "safe_budget = monthly_expenses + 2000 (т.е. 7000)\n"
-            + "Посчитай max_investments = (budget - safe_budget) / 500 (округлить вниз).\n"
-            + "Это максимальное число инвестиций в плане. Остальные дни — skip.\n\n"
+            + "safe_budget = monthly_expenses (чтобы точно пережить следующее списание).\n"
+            + "repair_reserve = если wear > 0.2 то wear * 10000, иначе 0.\n"
+            + "available = budget - safe_budget - repair_reserve.\n"
+            + "max_investments = available / 500 (округлить вниз, минимум 0).\n"
+            + "Ты можешь держать запас больше safe_budget если считаешь нужным (зима, низкий доход), но не обязана.\n\n"
             + "### ВАЖНО: трать излишки!\n"
-            + "Деньги сверх safe_budget должны РАБОТАТЬ. Копить сверх safe_budget бессмысленно — деньги не приносят процентов.\n"
-            + "Инвестиции повышают инфраструктуру → больше посетителей → больше дохода. Это окупается!\n"
-            + "Если budget=15000 и safe=7000, то max_investments = (15000-7000)/500 = 16. Ты можешь вложить все 7 дней!\n"
-            + "Если budget=9000 и safe=7000, то max_investments = (9000-7000)/500 = 4. Вложи 4 дня, 3 дня skip.\n"
-            + "skip оправдан ТОЛЬКО если: budget слишком низкий ИЛИ все факторы инфры уже >= 0.8.\n\n"
+            + "Деньги сверх (safe_budget + repair_reserve) должны РАБОТАТЬ.\n"
+            + "Инвестиции → больше посетителей → больше дохода. Копить сверх резервов бессмысленно.\n"
+            + "Но НЕ трать repair_reserve на инвестиции — ремонт важнее!\n\n"
             + "### Сезонный контекст\n"
             + "Доход зависит от посетителей. Посетители зависят от: сезона, инфраструктуры, attractiveness.\n"
             + "- winter: мало посетителей, но инвестиции всё равно нужны если бюджет позволяет.\n"
             + "- spring/summer/autumn: активно инвестируй, особенно летом.\n"
             + "Запас на зиму: к day%365=335 желательно иметь budget >= monthly_expenses * 2.\n\n"
-            + "## Стратегия по износу (wear)\n\n"
-            + "- wear < 0.2: отличное состояние, ремонт НЕ нужен.\n"
-            + "- wear 0.2–0.4: нормально, ремонт не нужен.\n"
-            + "- wear 0.4–0.6: повышенный, стоит запланировать ремонт.\n"
-            + "- wear > 0.6: КРИТИЧНО! Немедленно request_repair.\n"
-            + "Ремонт тоже стоит денег (50% сразу, 50% по завершении). Учитывай это в бюджете.\n\n"
+            + "## РЕМОНТ — ОБЯЗАТЕЛЬНЫЕ ПРАВИЛА (выполняй ДО инвестиций!)\n\n"
+            + "### Алгоритм принятия решений (выполняй СВЕРХУ ВНИЗ, первое подходящее):\n\n"
+            + "1. Если pending_quote != null → ОБЯЗАТЕЛЬНО accept_quote (всегда принимай!).\n"
+            + "2. Если repair_refused == true → negotiating сброшено, можно повторить request_repair.\n"
+            + "3. Если wear >= 0.6 И repairing==false И negotiating==false → ОБЯЗАТЕЛЬНО request_repair.\n"
+            + "4. Если wear >= 0.2 И wear < 0.6 И repairing==false И negotiating==false И budget > wear*10000+safe_budget → request_repair (выгоднее чинить раньше, пока дешевле).\n"
+            + "5. Если negotiating==true → skip (ждём ответа от реставратора).\n"
+            + "6. Если repairing==true → skip (ремонт идёт).\n"
+            + "7. Иначе → invest_infra в самый низкий фактор < 0.9, или skip если бюджет низкий.\n\n"
+            + "### Стоимость ремонта\n"
+            + "Цена ~ wear * 10000. Оплата: 50% сразу, 50% по завершении.\n"
+            + "repair_reserve = если wear > 0.2 то wear * 10000, иначе 0.\n\n"
+            + "### Цикл ремонта\n"
+            + "request_repair → через ~1-2 дня приходит pending_quote → accept_quote → ремонт начинается.\n"
+            + "Если реставратор отказал (repair_refused) → повторяй request_repair на следующий день.\n"
+            + "wear >= 0.6 — КРИТИЧНО, повторяй request_repair каждую неделю пока не примут.\n\n"
             + "## Доступные действия\n\n"
-            + "1. skip — пропустить ход. ТОЛЬКО если budget < safe_budget+500 или все факторы >= 0.8.\n"
-//            + "2. invest_attractiveness — вложить 500, attractiveness +0.1 (макс 1.0)\n"
-            + "2. invest_infra:<factor> — вложить 500, фактор +0.1 (макс 1.0)\n"
+            + "1. accept_quote — принять котировку. ИСПОЛЬЗУЙ СРАЗУ при pending_quote != null!\n"
+            + "2. request_repair — запросить котировку. ПРИОРИТЕТНО при wear >= 0.6.\n"
+            + "3. invest_infra:<factor> — вложить 500, фактор +0.1 (макс 1.0). НЕ инвестируй >= 0.9.\n"
             + "   Факторы: mobile_network, payment_system, transport_access, internet_quality, navigation_access, service_availability\n"
-            + "3. request_repair — запросить котировку (ТОЛЬКО при wear > 0.4)\n"
-            + "4. accept_quote — принять котировку (ТОЛЬКО если pending_quote != null)\n"
-            + "5. reject_quote — отклонить котировку (ТОЛЬКО если pending_quote != null)\n\n"
+            + "4. reject_quote — отклонить котировку (ТОЛЬКО если pending_quote != null, используй РЕДКО).\n"
+            + "5. skip — пропустить ход. Когда ждёшь ответа или бюджет низкий.\n\n"
             + "## Прочие правила\n\n"
-            + "- НЕ запрашивай ремонт при wear < 0.2.\n"
-            + "- Для ремонта: request_repair -> жди pending_quote -> accept_quote/reject_quote.\n"
-            + "- Нельзя request_repair если repairing=true или negotiating=true.\n"
-            + "- Инфраструктура деградирует ежедневно. Низкие значения отпугивают посетителей.\n"
-            + "- Инвестируй в самый низкий фактор инфраструктуры — это даёт максимальный эффект.\n"
-            + "- Чередуй инвестиции между разными факторами, не вкладывай в один и тот же подряд.\n\n"
+            + "- request_repair нельзя если repairing=true или negotiating=true.\n"
+            + "- НЕ инвестируй в факторы >= 0.9.\n"
+            + "- Инвестируй в самый низкий фактор < 0.9.\n"
+            + "- Чередуй инвестиции между разными факторами.\n\n"
             + "## Формат ответа\n\n"
             + "Верни JSON-массив ровно из 7 объектов — план на 7 дней. День 1 = сегодня.\n"
-            + "ТОЛЬКО валидный JSON, без markdown, без комментариев:\n"
-            + "[{\"action\":\"...\",\"target\":\"...\",\"reasoning\":\"...\"}, ...ещё 6 объектов]\n\n"
-            + "Пример (budget=12000, safe=7000, max_investments=10 → все 7 дней инвестируем):\n"
-            + "[\n"
-            + "  {\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"самый низкий 0.38\"},\n"
-            + "  {\"action\":\"invest_infra\",\"target\":\"payment_system\",\"reasoning\":\"0.42 — второй\"},\n"
-            + "  {\"action\":\"invest_infra\",\"target\":\"transport_access\",\"reasoning\":\"0.45\"},\n"
-            + "  {\"action\":\"invest_infra\",\"target\":\"internet_quality\",\"reasoning\":\"0.48\"},\n"
-            + "  {\"action\":\"invest_infra\",\"target\":\"navigation_access\",\"reasoning\":\"0.50\"},\n"
-            + "  {\"action\":\"invest_infra\",\"target\":\"service_availability\",\"reasoning\":\"0.52\"},\n"
-            + "  {\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"снова самый низкий после цикла\"}\n"
-            + "]";
+            + "ТОЛЬКО валидный JSON, без markdown, без комментариев.\n"
+            + "reasoning должен быть КОРОТКИМ — максимум 10 слов на каждый action! Не расписывай вычисления.\n\n"
+            + "[{\"action\":\"...\",\"target\":\"...\",\"reasoning\":\"...\"}, ...ещё 6]\n\n"
+            + "Пример 1 (wear=0.05, нет ремонта):\n"
+            + "[{\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"min 0.38\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"payment_system\",\"reasoning\":\"0.42\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"transport_access\",\"reasoning\":\"0.45\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"internet_quality\",\"reasoning\":\"0.48\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"navigation_access\",\"reasoning\":\"0.50\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"service_availability\",\"reasoning\":\"0.52\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"цикл\"}]\n\n"
+            + "Пример 2 (wear=0.65, pending_quote={price:6500,delay:1}):\n"
+            + "[{\"action\":\"accept_quote\",\"target\":\"none\",\"reasoning\":\"есть котировка, принимаем\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём начала ремонта\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ремонт идёт\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"min 0.40\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"payment_system\",\"reasoning\":\"0.45\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"transport_access\",\"reasoning\":\"0.50\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"internet_quality\",\"reasoning\":\"0.52\"}]\n\n"
+            + "Пример 3 (wear=0.45, negotiating=false, pending_quote=null):\n"
+            + "[{\"action\":\"request_repair\",\"target\":\"none\",\"reasoning\":\"wear 0.45, чиним пока дёшево\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём котировку\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём котировку\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"min 0.38\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"payment_system\",\"reasoning\":\"0.42\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"transport_access\",\"reasoning\":\"0.48\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"internet_quality\",\"reasoning\":\"0.50\"}]";
 
     public AIClient() {
         this.apiKey = System.getenv("OPENROUTER_API_KEY");
@@ -128,7 +150,7 @@ public class AIClient {
             String body = "{\"model\":" + jsonString(MODEL)
                     + ",\"messages\":" + messagesJson
                     + ",\"temperature\":0.3"
-                    + ",\"max_tokens\":600}";
+                    + ",\"max_tokens\":1000}";
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(ENDPOINT))
@@ -146,7 +168,7 @@ public class AIClient {
                 return new String[]{"skip", "none"};
             }
 
-            logger.info("AI response: " + response.body());
+//            logger.info("AI response: " + response.body());
 
             String content = extractContent(response.body());
             if (content == null) {
@@ -231,6 +253,15 @@ public class AIClient {
 
         if (plan.isEmpty()) {
             plan.add(new String[]{"skip", "none"});
+        }
+
+        // Pad incomplete plans with skip (e.g. response truncated by max_tokens)
+        int parsed = plan.size();
+        while (plan.size() < PLAN_DAYS) {
+            plan.add(new String[]{"skip", "none"});
+        }
+        if (parsed < PLAN_DAYS) {
+            logger.warning("AI returned only " + parsed + " actions, padded to " + PLAN_DAYS + " with skip");
         }
         return plan;
     }

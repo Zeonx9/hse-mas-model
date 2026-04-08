@@ -159,6 +159,7 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         applyInfrastructureDegradation();
         applyReviews();
         resetDailyCounters();
+        logger.info("applyWear");
         applyWear();
         updatePercepts();
         if (!experimentMode) {

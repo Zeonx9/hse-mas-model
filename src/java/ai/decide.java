@@ -24,10 +24,11 @@ public class decide extends DefaultInternalAction {
         BeliefBase bb = ts.getAg().getBB();
         Map<String, Object> state = extractState(bb);
 
-        // Invalidate cached plan if quote arrived or repair started (needs replanning)
+        // Invalidate cached plan on events that need immediate replanning
         boolean hasQuote = state.get("pending_quote") != null;
         boolean repairing = Boolean.TRUE.equals(state.get("repairing"));
-        if (hasQuote || repairing) {
+        boolean refused = Boolean.TRUE.equals(state.get("repair_refused"));
+        if (hasQuote || repairing || refused) {
             client.invalidatePlan();
         }
 
@@ -62,6 +63,10 @@ public class decide extends DefaultInternalAction {
         // Check for pending quote
         Map<String, Object> pendingQuote = getQuoteBelief(bb);
         state.put("pending_quote", pendingQuote);
+
+        // Check if restorer refused
+        boolean refused = hasBeliefWithArity(bb, "repair_refused", 1);
+        state.put("repair_refused", refused);
 
         state.put("museum_capacity", getNumericBelief(bb, "museum_slots_free", 10));
         state.put("ticket_price", getNumericBelief(bb, "museum_price", 20));
@@ -113,5 +118,10 @@ public class decide extends DefaultInternalAction {
             } catch (Exception ignored) {}
         }
         return null;
+    }
+
+    private boolean hasBeliefWithArity(BeliefBase bb, String functor, int arity) {
+        Iterator<Literal> it = bb.getCandidateBeliefs(new PredicateIndicator(functor, arity));
+        return it != null && it.hasNext();
     }
 }

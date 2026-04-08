@@ -51,19 +51,19 @@ negotiating_since(0).
       skip.
 
 +!execute_decision(Day, "accept_quote", _)
-   : negotiating(yes) & negotiating_since(Since) & repair_quote(Price, Delay, Since)
+   : repair_quote(Price, Delay, _)
    <- .print("Day ", Day, ": Accepting quote price=", Price, " delay=", Delay);
       +repair_pending_delay(Delay);
       +repair_price(Price);
       -+negotiating(no);
-      -repair_quote(Price, Delay, Since);
+      -repair_quote(Price, Delay, _);
       skip.
 
 +!execute_decision(Day, "reject_quote", _)
-   : negotiating(yes) & negotiating_since(Since) & repair_quote(Price, Delay, Since)
+   : repair_quote(Price, Delay, _)
    <- .print("Day ", Day, ": Rejecting quote price=", Price);
       -+negotiating(no);
-      -repair_quote(Price, Delay, Since);
+      -repair_quote(Price, Delay, _);
       skip.
 
 /* Fallback — invalid/impossible AI action */
@@ -74,6 +74,8 @@ negotiating_since(0).
 +!do_one_action(_) <- skip.
 -!do_one_action(_) <- skip.
 
-/* Stale beliefs cleanup */
-+repair_quote(_, _, _) <- -repair_quote(_, _, _).
-+repair_refused(_) <- -repair_refused(_).
+/* When restorer refuses — reset negotiation state */
++repair_refused(_)
+   <- .print("Restorer refused, resetting negotiation.");
+      -+negotiating(no);
+      -repair_refused(_).
