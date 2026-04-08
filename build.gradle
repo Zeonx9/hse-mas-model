@@ -18,6 +18,7 @@ repositories {
 
 dependencies {
     implementation 'io.github.jason-lang:jason-interpreter:3.3.0'
+    implementation 'org.jfree:jfreechart:1.5.4'
     implementation fileTree(dir: 'lib', include: '*.jar')
 }
 

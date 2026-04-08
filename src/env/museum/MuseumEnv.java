@@ -37,6 +37,7 @@ public class MuseumEnv extends TimeSteppedEnvironment {
     private double navigationAccess    = 50.0;
     private double serviceAvailability = 50.0;
     private double budget = 5000.0;
+    private double initialBudget = 5000.0;
     private double reviewSum = 0;
     private int    reviewCount = 0;
     private static final double REVIEW_WEIGHT = 0.2;
@@ -98,6 +99,7 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         }
         experimentMode = maxDays > 0 && !csvFile.isEmpty();
 
+        initialBudget = budget;
         museumSlotsFree = museumCapacity;
         hotelRoomsFree  = hotelCapacity;
 
@@ -130,8 +132,9 @@ public class MuseumEnv extends TimeSteppedEnvironment {
                     mobileNetwork, paymentSystem, transportAccess,
                     internetQuality, navigationAccess, serviceAvailability,
                     reviewTag, budget, repairTag));
-          
-        updateChart();
+
+            updateChart();
+        }
 
         if (experimentMode && step >= maxDays) {
             writeCsvRow();
@@ -266,6 +269,7 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         double upfront = Math.round(price / 2.0);
         repairRemainingPayment = price - upfront;
         budget -= upfront;
+        todayCost += upfront;
         repairing = true;
         logger.info(String.format(
             "Manager ordered repair (wear=%.1f%%) | negotiated=%.0f, upfront=%.0f, remaining=%.0f, budget=%.0f",
@@ -357,9 +361,11 @@ public class MuseumEnv extends TimeSteppedEnvironment {
      * All values are normalized to 0–100 so they are comparable on one axis.
      *
      * Revenue:      (dailyRevenue / maxDailyRevenue) * 100
-     * Satisfaction: clamp((attractiveness + infrastructure - wear) / 2, 0, 100)
+     * Satisfaction: actual visitor review average (0–100), falls back to lastAvgReview
      * Heritage:     100 – wear
      * Costs:        clamp((dailyCost / refCost) * 100, 0, 100)
+     * Budget:       clamp(budget / (initialBudget * 10) * 100, 0, 100)
+     * Season:       seasonFactor * 100  (30 winter … 100 summer)
      * Utility:      W1*Revenue + W2*Satisfaction + W3*Heritage – W4*Costs
      */
     private void updateChart() {
@@ -369,22 +375,28 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         double maxDailyRevenue = museumCapacity * ticketPrice + hotelCapacity * hotelPrice;
         double revenue = Math.min(100, (todayRevenue / maxDailyRevenue) * 100);
 
-        double satisfaction = Math.max(0, Math.min(100,
-                (attractiveness + infrastructure - wear) / 2.0));
+        double satisfaction = reviewCount > 0
+                ? Math.max(0, Math.min(100, reviewSum / reviewCount))
+                : Math.max(0, Math.min(100, lastAvgReview));
 
         double heritage = Math.max(0, 100 - wear);
 
-        // Reference cost: daily base (monthly/30) + max one-off action (500)
         double refCost = monthlyExpenditures / 30.0 + 500;
         double costs = Math.min(100, (todayCost / refCost) * 100);
+
+        double budgetRef = Math.max(1, initialBudget * 10);
+        double budgetNorm = Math.max(0, Math.min(100, budget / budgetRef * 100));
+
+        double seasonNorm = seasonFactor * 100;
 
         double utility = W1 * revenue + W2 * satisfaction + W3 * heritage - W4 * costs;
 
         logger.info(String.format(
-                "[Metrics] Rev=%.1f Sat=%.1f Her=%.1f Cost=%.1f U=%.2f",
-                revenue, satisfaction, heritage, costs, utility));
+                "[Metrics] Rev=%.1f Sat=%.1f Her=%.1f Cost=%.1f Bud=%.1f Sea=%.0f U=%.2f",
+                revenue, satisfaction, heritage, costs, budgetNorm, seasonNorm, utility));
 
-        chart.addDataPoint(revenue, satisfaction, heritage, costs, utility);
+        chart.addDataPoint(revenue, satisfaction, heritage, costs, utility,
+                budgetNorm, seasonNorm);
     }
 
     private void updatePercepts() {
