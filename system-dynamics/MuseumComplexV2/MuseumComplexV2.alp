@@ -1022,12 +1022,13 @@
 					<LineWidth>1</LineWidth>
 					<Delay>false</Delay>
 				</Link>
-				<Link Polarity="null">
+				<Link SourceId="1776000400007" TargetId="1776000400003" Polarity="null">
 					<Height>62.927</Height>
 					<PolarityPosition>0.95</PolarityPosition>
 					<Direction><X>10</X><Y>230</Y></Direction>
 					<Id>1776000500020</Id>
-					<X>760</X><Y>270</Y>
+					<Name><![CDATA[repairActive - EffCapacity]]></Name>
+					<X>750</X><Y>270</Y>
 					<Label><X>40</X><Y>-50</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
