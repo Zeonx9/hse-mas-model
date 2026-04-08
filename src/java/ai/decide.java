@@ -36,13 +36,13 @@ public class decide extends DefaultInternalAction {
         state.put("day", getNumericBelief(bb, "step", 0));
         state.put("season", getStringBelief(bb, "season", "winter"));
         state.put("budget", getNumericBelief(bb, "budget", 0));
-        state.put("wear", getNumericBelief(bb, "wear", 0));
-        state.put("attractiveness", getNumericBelief(bb, "attractiveness", 50));
-        state.put("avg_review", getNumericBelief(bb, "avg_review", 50));
+        state.put("wear", getNumericBelief(bb, "wear", 0) / 100.0);
+        state.put("attractiveness", getNumericBelief(bb, "attractiveness", 50) / 100.0);
+        state.put("avg_review", getNumericBelief(bb, "avg_review", 50) / 100.0);
 
         Map<String, Object> infra = new LinkedHashMap<>();
         for (String factor : INFRA_FACTORS) {
-            infra.put(factor, getNumericBelief(bb, factor, 50));
+            infra.put(factor, getNumericBelief(bb, factor, 50) / 100.0);
         }
         state.put("infrastructure", infra);
 
@@ -59,6 +59,13 @@ public class decide extends DefaultInternalAction {
         state.put("museum_capacity", getNumericBelief(bb, "museum_slots_free", 10));
         state.put("ticket_price", getNumericBelief(bb, "museum_price", 20));
         state.put("hotel_price", getNumericBelief(bb, "hotel_price", 30));
+
+        // Budget planning helpers
+        int day = (int) getNumericBelief(bb, "step", 0);
+        int daysUntilExpenses = 30 - (day % 30);
+        if (daysUntilExpenses == 30 && day > 0) daysUntilExpenses = 30;
+        state.put("monthly_expenses", 5000);
+        state.put("days_until_expenses", daysUntilExpenses);
 
         return state;
     }

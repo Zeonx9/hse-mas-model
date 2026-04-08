@@ -146,7 +146,7 @@ public class MuseumEnv extends TimeSteppedEnvironment {
             writeCsvRow();
             new Thread(() -> {
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(400);
                     getEnvironmentInfraTier().getRuntimeServices().stopMAS();
                 } catch (Exception e) { e.printStackTrace(); }
             }).start();
