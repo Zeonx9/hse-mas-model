@@ -52,10 +52,11 @@ python3 experiments/run_experiments.py experiments/my_config.json
   "output": "experiments/results.csv",
   "parameters": {
     "museumCapacity": [10, 15, 20],
-    "hotelCapacity": [3, 5, 7],
+    "hotelCapacity": [5, 7],
     "ticketPrice": [20, 30, 50],
     "hotelPrice": [30, 50],
-    "monthlyExpenditures": [5000]
+    "monthlyExpenditures": [5000],
+    "investMinProb": [0.1, 0.8]
   }
 }
 ```
@@ -76,6 +77,7 @@ python3 experiments/run_experiments.py experiments/my_config.json
 
 | Параметр | Описание | Типичные значения |
 |---|---|---|
+| `investMinProb` | Нижняя граница вероятности инвестирования менеджером при дефиците ремонтного фонда (см. `manager.asl`, приоритет 4) | 0.0–0.5 |
 | `museumCapacity` | Максимальное число посетителей музея в день | 10, 15, 20, 30 |
 | `hotelCapacity` | Число мест в гостинице | 3, 5, 7, 10 |
 | `ticketPrice` | Цена входного билета | 20, 30, 50, 100 |
@@ -96,7 +98,7 @@ python3 experiments/run_experiments.py experiments/my_config.json
 
 ### Столбцы
 
-#### Входные параметры (7 столбцов)
+#### Входные параметры (8 столбцов)
 
 | Столбец | Описание |
 |---|---|
@@ -105,6 +107,7 @@ python3 experiments/run_experiments.py experiments/my_config.json
 | `ticketPrice` | Цена билета |
 | `hotelPrice` | Цена гостиницы |
 | `monthlyExpenditures` | Ежемесячные расходы |
+| `investMinProb` | Нижняя граница вероятности инвестирования менеджером при дефиците ремонтного фонда |
 | `numVisitors` | Число агентов-посетителей |
 | `maxDays` | Длительность прогона (дней) |
 
@@ -130,9 +133,9 @@ python3 experiments/run_experiments.py experiments/my_config.json
 ### Пример содержимого CSV
 
 ```csv
-museumCapacity,hotelCapacity,ticketPrice,hotelPrice,monthlyExpenditures,numVisitors,maxDays,totalVisits,totalHotelStays,totalRefusals,totalRepairs,finalWear,finalAttractiveness,finalBudget,finalMobileNetwork,finalPaymentSystem,finalTransportAccess,finalInternetQuality,finalNavigationAccess,finalServiceAvailability,finalAvgReview
-10,3,30,50,5000,10,30,10,2,290,0,2.40,47.57,5400.00,49.86,49.86,49.10,49.10,49.10,49.10,40.21
-15,3,30,50,5000,10,30,14,3,286,0,2.45,48.50,5570.00,49.87,49.87,49.10,49.10,49.10,49.10,40.92
+museumCapacity,hotelCapacity,ticketPrice,hotelPrice,monthlyExpenditures,investMinProb,numVisitors,maxDays,totalVisits,totalHotelStays,totalRefusals,totalRepairs,finalWear,finalAttractiveness,finalBudget,finalMobileNetwork,finalPaymentSystem,finalTransportAccess,finalInternetQuality,finalNavigationAccess,finalServiceAvailability,finalAvgReview
+10,3,30,50,5000,0.1000,10,30,10,2,290,0,2.40,47.57,5400.00,49.86,49.86,49.10,49.10,49.10,49.10,40.21
+15,3,30,50,5000,0.1000,10,30,14,3,286,0,2.45,48.50,5570.00,49.87,49.87,49.10,49.10,49.10,49.10,40.92
 ```
 
 ---
