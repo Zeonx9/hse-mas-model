@@ -140,13 +140,27 @@ public class MuseumEnv extends TimeSteppedEnvironment {
                     reviewTag, budget, repairTag));
 
             updateChart();
+
+            // Yearly snapshot
+            if (step % 365 == 0) {
+                logger.info(String.format(Locale.US,
+                        "=== YEAR %d SNAPSHOT ===\n%s\n%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f",
+                        step / 365, CSV_HEADER,
+                        museumCapacity, hotelCapacity, ticketPrice, hotelPrice,
+                        monthlyExpenditures, numVisitors, maxDays,
+                        totalVisits, totalHotelStays, totalRefusals, totalRepairs,
+                        wear, attractiveness, budget,
+                        mobileNetwork, paymentSystem, transportAccess,
+                        internetQuality, navigationAccess, serviceAvailability,
+                        lastAvgReview));
+            }
         }
 
         if (experimentMode && step >= maxDays) {
             writeCsvRow();
             new Thread(() -> {
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(400);
                     getEnvironmentInfraTier().getRuntimeServices().stopMAS();
                 } catch (Exception e) { e.printStackTrace(); }
             }).start();
