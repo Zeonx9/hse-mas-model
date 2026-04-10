@@ -1,5 +1,5 @@
 // Museum Complex - Manager Agent (AI-Powered)
-// Mechanical actions (priority 0/0.5) stay hardcoded.
+// Mechanical actions (priority 0/0.5/1/1.5) stay hardcoded.
 // All strategic decisions delegated to AI via OpenRouter.
 
 /* Initial beliefs */
@@ -26,14 +26,23 @@ negotiating_since(0).
       +repair_pending_delay(0);
       skip.
 
-/* Priority 1: pending quote → auto-accept (no need to wait for AI) */
+/* Priority 1: pending quote → auto-accept */
 +!do_one_action(Day)
-   : repair_quote(Price, Delay, _) & negotiating(yes)
+   : repair_quote(Price, Delay, _)
    <- .print("Day ", Day, ": Auto-accepting quote price=", Price, " delay=", Delay);
       +repair_pending_delay(Delay);
       +repair_price(Price);
       -+negotiating(no);
       .abolish(repair_quote(_, _, _));
+      skip.
+
+/* Priority 1.5: negotiating timeout (7+ days) → reset and let AI retry */
++!do_one_action(Day)
+   : negotiating(yes) & negotiating_since(Since) & Day >= Since + 7
+   <- .print("Day ", Day, ": Negotiation timeout (sent day ", Since, "), resetting.");
+      -+negotiating(no);
+      .abolish(repair_quote(_, _, _));
+      .abolish(repair_refused(_));
       skip.
 
 /* All other decisions → AI */
@@ -52,11 +61,12 @@ negotiating_since(0).
 
 +!execute_decision(Day, "request_repair", _)
    : repairing(no) & negotiating(no)
-   <- -repair_refused(_);
-      -repair_quote(_, _, _);
+   <- .abolish(repair_refused(_));
+      .abolish(repair_quote(_, _, _));
       -repair_price(_);
       -+negotiating(yes);
       -+negotiating_since(Day);
+      .print("Day ", Day, ": Sending quote request to restorer.");
       .send(restorer, achieve, quote_request(Day));
       skip.
 
@@ -83,11 +93,6 @@ negotiating_since(0).
 /* Default */
 +!do_one_action(_) <- skip.
 -!do_one_action(_) <- skip.
-
-/* When a new quote arrives — remove any old quotes, keep only latest */
-+repair_quote(Price, Delay, Day)
-   <- .abolish(repair_quote(_, _, _));
-      +repair_quote(Price, Delay, Day).
 
 /* When restorer refuses — reset negotiation state */
 +repair_refused(_)
