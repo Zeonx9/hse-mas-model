@@ -109,6 +109,88 @@
 			</ScaleRuler>
 			<CurrentLevel>1775734131390</CurrentLevel>
 			<ConnectionsId>1775734131385</ConnectionsId>
+			<Outputs>
+				<Output>
+					<Id>1775839359258</Id>
+					<Name><![CDATA[buget]]></Name>
+					<X>890</X><Y>160</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Type><![CDATA[double]]></Type>
+					<UnitType><![CDATA[NONE]]></UnitType>
+					<Value Class="CodeValue">
+						<Code><![CDATA[Budget]]></Code>
+					</Value>
+					<ComputationMoment>ON_SIMULATION_END</ComputationMoment>
+					<ComputationTimeCode Class="CodeUnitValue">
+						<Code><![CDATA[]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</ComputationTimeCode>
+					<ComputationDate>1775894400000</ComputationDate>
+				</Output>
+				<Output>
+					<Id>1775839365006</Id>
+					<Name><![CDATA[wear]]></Name>
+					<X>890</X><Y>190</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Type><![CDATA[double]]></Type>
+					<UnitType><![CDATA[NONE]]></UnitType>
+					<Value Class="CodeValue">
+						<Code><![CDATA[Wear]]></Code>
+					</Value>
+					<ComputationMoment>ON_SIMULATION_END</ComputationMoment>
+					<ComputationTimeCode Class="CodeUnitValue">
+						<Code><![CDATA[]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</ComputationTimeCode>
+					<ComputationDate>1775894400000</ComputationDate>
+				</Output>
+				<Output>
+					<Id>1775839370693</Id>
+					<Name><![CDATA[infra]]></Name>
+					<X>890</X><Y>220</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Type><![CDATA[double]]></Type>
+					<UnitType><![CDATA[NONE]]></UnitType>
+					<Value Class="CodeValue">
+						<Code><![CDATA[Infrastructure]]></Code>
+					</Value>
+					<ComputationMoment>ON_SIMULATION_END</ComputationMoment>
+					<ComputationTimeCode Class="CodeUnitValue">
+						<Code><![CDATA[]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</ComputationTimeCode>
+					<ComputationDate>1775894400000</ComputationDate>
+				</Output>
+				<Output>
+					<Id>1775839375370</Id>
+					<Name><![CDATA[attract]]></Name>
+					<X>890</X><Y>250</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Type><![CDATA[double]]></Type>
+					<UnitType><![CDATA[NONE]]></UnitType>
+					<Value Class="CodeValue">
+						<Code><![CDATA[Attractiveness]]></Code>
+					</Value>
+					<ComputationMoment>ON_SIMULATION_END</ComputationMoment>
+					<ComputationTimeCode Class="CodeUnitValue">
+						<Code><![CDATA[]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</ComputationTimeCode>
+					<ComputationDate>1775894400000</ComputationDate>
+				</Output>
+			</Outputs>
 			<Variables>
 				<Variable Class="AuxVariable">
 					<Id>1775734450575</Id>
@@ -1256,9 +1338,108 @@
 			<EnableDeveloperPanel>false</EnableDeveloperPanel>
 			<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
 		</AnimationProperties>
-		<Inputs>		
+		<Inputs>
+    		<RunConfigurationInput>
+				<Id>1775839033088</Id>
+				<Name><![CDATA[Monthly costs]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[museumsdmodel]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[monthlyCosts]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1775839033089</Id>
+				<Name><![CDATA[Combined price]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[museumsdmodel]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[combinedPrice]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1775839033090</Id>
+				<Name><![CDATA[N]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[museumsdmodel]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[N]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1775839033091</Id>
+				<Name><![CDATA[Default capacity]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[museumsdmodel]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[defaultCapacity]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>		
 		</Inputs>
 		<Outputs>
+    		<RunConfigurationOutput>
+				<Id>1775839037605</Id>
+				<Name><![CDATA[Parameters]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[museumsdmodel]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[Parameters]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
+    		<RunConfigurationOutput>
+				<Id>1775839037607</Id>
+				<Name><![CDATA[Visits]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[museumsdmodel]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[Visits]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
+    		<RunConfigurationOutput>
+				<Id>1775839037609</Id>
+				<Name><![CDATA[Budget]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[museumsdmodel]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[budget]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
+    		<RunConfigurationOutput>
+				<Id>1775839790387</Id>
+				<Name><![CDATA[Buget]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[museumsdmodel]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[buget]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
+    		<RunConfigurationOutput>
+				<Id>1775839598717</Id>
+				<Name><![CDATA[Attract]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[museumsdmodel]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[attract]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
+    		<RunConfigurationOutput>
+				<Id>1775839598719</Id>
+				<Name><![CDATA[Infra]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[museumsdmodel]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[infra]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
+    		<RunConfigurationOutput>
+				<Id>1775839598723</Id>
+				<Name><![CDATA[Wear]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[museumsdmodel]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[wear]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
 		</Outputs>
 	</RunConfiguration>
 	<Experiments>
@@ -1329,8 +1510,143 @@
 				<FinalTime><![CDATA[100.0]]></FinalTime>
 			</ModelTimeProperties>
 			<BypassInitialScreen>true</BypassInitialScreen>
-		</SimulationExperiment>	
+		</SimulationExperiment>
+		<!--   =========  Parameter Variation Experiment   ========  -->
+		<ParamVariationExperiment ActiveObjectClassId="1775734131384">
+			<Id>1775839850187</Id>
+			<Name><![CDATA[ParametersVariation]]></Name>
+			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
+			<InitialSetupCode><![CDATA[results.println("Iteration,monthlyCosts,combinedPrice,N,defaultCapacity,budget,wear,infra,attract");]]></InitialSetupCode>
+			<MaximumMemory>512</MaximumMemory>
+			<RandomNumberGenerationType>randomSeed</RandomNumberGenerationType>
+			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+			<AfterSimulationRunCode><![CDATA[results.println(getCurrentIteration() + "," + root.monthlyCosts + "," + root.combinedPrice + "," + root.N + "," + root.defaultCapacity + "," + root.Budget + "," + root.Wear + "," + root.Infrastructure + "," + root.Attractiveness);]]></AfterSimulationRunCode>
+			<SeedValue>1</SeedValue>
+			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
+			<VmArgs><![CDATA[]]></VmArgs>
+			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+			<Connectivity>
+				<TextFile>
+					<Id>1775840567529</Id>
+					<Name><![CDATA[results]]></Name>
+					<X>70</X><Y>60</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<FileType>FILE</FileType>
+					<Url><![CDATA[]]></Url>
+					<ResourceReference>
+						<PackageName><![CDATA[museumsdmodel]]></PackageName>
+						<ClassName><![CDATA[/Users/avmushtukov/Desktop/mas_dz/modeling/project/museum_complex/experiments/sd_results.csv]]></ClassName>
+					</ResourceReference>
+					<FileMode>WRITE_APPEND</FileMode>
+					<CharsetName>UTF-8</CharsetName>
+					<Separators></Separators>
+				</TextFile>
+			</Connectivity>
+
+
+			<AllowParallelEvaluations>true</AllowParallelEvaluations>
+			<UseFreeformParameters>false</UseFreeformParameters>
+			<NumberOfRuns>10</NumberOfRuns>
+			<FreeformParamValue>	
+				<Id>1775736176299</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1775737804172</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1775739880701</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1775740218243</Id>
+			</FreeformParamValue>
+			<RangeVariationParamValue>	
+				<Id>1775736176299</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1775737804172</Id>
+				<Type>RANGE</Type>
+				<Expression Class="CodeValue">
+					<Code><![CDATA[30, 110, 20]]></Code>
+				</Expression>
+				<From Class="CodeValue">
+					<Code><![CDATA[30]]></Code>
+				</From>
+				<To Class="CodeValue">
+					<Code><![CDATA[110]]></Code>
+				</To>
+				<Step Class="CodeValue">
+					<Code><![CDATA[20]]></Code>
+				</Step>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1775739880701</Id>
+				<Type>RANGE</Type>
+				<Expression Class="CodeValue">
+					<Code><![CDATA[50, 80, 5]]></Code>
+				</Expression>
+				<From Class="CodeValue">
+					<Code><![CDATA[50]]></Code>
+				</From>
+				<To Class="CodeValue">
+					<Code><![CDATA[75]]></Code>
+				</To>
+				<Step Class="CodeValue">
+					<Code><![CDATA[5]]></Code>
+				</Step>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1775740218243</Id>
+				<Type>RANGE</Type>
+				<Expression Class="CodeValue">
+					<Code><![CDATA[10, 20, 10]]></Code>
+				</Expression>
+				<From Class="CodeValue">
+					<Code><![CDATA[10]]></Code>
+				</From>
+				<To Class="CodeValue">
+					<Code><![CDATA[20]]></Code>
+				</To>
+				<Step Class="CodeValue">
+					<Code><![CDATA[5]]></Code>
+				</Step>
+			</RangeVariationParamValue>
+			<ModelTimeProperties>
+				<StopOption><![CDATA[Stop at specified time]]></StopOption>
+				<InitialDate><![CDATA[1775692800000]]></InitialDate>	
+				<InitialTime><![CDATA[0.0]]></InitialTime>	
+				<FinalDate><![CDATA[1775693165000]]></FinalDate>	
+				<FinalTime><![CDATA[365.0]]></FinalTime>	
+			</ModelTimeProperties>
+			<PresentationProperties>
+				<EnableZoomAndPanning>true</EnableZoomAndPanning>
+				<Title><![CDATA[MuseumSdModel : ParametersVariation]]></Title>
+				<EnableDeveloperPanel>true</EnableDeveloperPanel>
+				<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
+			</PresentationProperties>
+			<ReplicationsProperties>
+				<UseReplication>false</UseReplication>
+				<FixedReplicationsNumber>true</FixedReplicationsNumber>
+				<ReplicationPerIteration>10</ReplicationPerIteration>
+				<MinimumReplication>2</MinimumReplication>
+				<MaximumReplication>10</MaximumReplication>
+				<ConfidenceLevel>LEVEL_80</ConfidenceLevel>
+				<ErrorPercent>0.5</ErrorPercent>
+				<ExpressionForConfidenceComputation><![CDATA[0]]></ExpressionForConfidenceComputation>
+			</ReplicationsProperties>
+		</ParamVariationExperiment>	
 	</Experiments>
+	<ModelResources>
+		<Resource>
+			<Id>1775840659088</Id>
+			<Path><![CDATA[/Users/avmushtukov/Desktop/mas_dz/modeling/project/museum_complex/experiments/sd_results.csv]]></Path>
+			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+			<Location>FILE_SYSTEM</Location>
+		</Resource>
+	</ModelResources>
     <RequiredLibraryReference>
 		<LibraryName><![CDATA[com.anylogic.libraries.modules.markup_descriptors]]></LibraryName>
 		<VersionMajor>1</VersionMajor>
