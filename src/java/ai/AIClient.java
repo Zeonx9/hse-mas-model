@@ -14,7 +14,7 @@ public class AIClient {
 
     private static final String ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
     private static final String MODEL = "qwen/qwen3-coder-next";
-    private static final int MAX_EXCHANGES = 30;
+    private static final int MAX_EXCHANGES = 1;
     private static final int PLAN_DAYS = 7;
 
     private final String apiKey;
@@ -55,7 +55,7 @@ public class AIClient {
             + "1. pending_quote != null → accept_quote.\n"
             + "2. repair_refused == true → request_repair (повтор).\n"
             + "3. wear >= 0.3 И repairing==false И negotiating==false → request_repair.\n"
-            + "   ПОЧЕМУ: высокий wear снижает отзывы посетителей → падает attractiveness → меньше дохода.\n"
+            + "   ПОЧЕМУ: повышенный wear снижает отзывы посетителей → падает attractiveness → меньше дохода.\n"
             + "   Чем раньше починишь, тем дешевле (цена ~ wear*10000) и тем быстрее вернутся посетители.\n"
             + "4. wear >= 0.2 И все факторы инфры >= 0.9 И repairing==false И negotiating==false → request_repair.\n"
             + "   ПОЧЕМУ: инвестировать некуда (всё >= 0.9), лучше снизить wear для лучших отзывов.\n"
@@ -90,46 +90,47 @@ public class AIClient {
             + "ТОЛЬКО валидный JSON, без markdown, без комментариев.\n"
             + "reasoning должен быть КОРОТКИМ — максимум 10 слов на каждый action! Не расписывай вычисления.\n\n"
             + "[{\"action\":\"...\",\"target\":\"...\",\"reasoning\":\"...\"}, ...ещё 6]\n\n"
-            + "Пример 1 — wear низкий, инвестируем (wear=0.05, infra 0.38-0.52):\n"
-            + "[{\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"wear ок, min infra 0.38\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"payment_system\",\"reasoning\":\"следующий 0.42\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"transport_access\",\"reasoning\":\"0.45\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"internet_quality\",\"reasoning\":\"0.48\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"navigation_access\",\"reasoning\":\"0.50\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"service_availability\",\"reasoning\":\"0.52\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"цикл, снова min\"}]\n\n"
-            + "Пример 2 — wear средний, ремонт (wear=0.35, infra 0.40-0.60, negotiating=false):\n"
+            + "Пример 1 — wear низкий, инвестируем (wear=0.05, mobile_network=0.42, payment_system=0.38, transport_access=0.45, internet_quality=0.48, navigation_access=0.50, service_availability=0.52):\n"
+            + "[{\"action\":\"invest_infra\",\"target\":\"payment_system\",\"reasoning\":\"wear < 0.2 ремонт ничего не даст, инвестируем в самый низкий фактор payment_system=0.38\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"следующий низкий фактор mobile_network(0.42)\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"transport_access\",\"reasoning\":\"инветируем transport_access(0.45)\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"internet_quality\",\"reasoning\":\"инветируем internet_quality(0.48)\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"navigation_access\",\"reasoning\":\"инветируем navigation_access(0.50)\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"service_availability\",\"reasoning\":\"service_availability(0.52) в infra_below_90\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"пропускаем действие, вложили по разу во все\"}]\n\n"
+            + "Пример 2 — wear средний, ремонт (wear=0.35, mobile_network=0.40, payment_system=0.45, transport_access=0.91, internet_quality=0.48, navigation_access=0.95, negotiating=false):\n"
             + "[{\"action\":\"request_repair\",\"target\":\"none\",\"reasoning\":\"wear 0.35 портит отзывы, чиним\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"пока ждём котировку, min 0.40\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"payment_system\",\"reasoning\":\"0.45\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"transport_access\",\"reasoning\":\"0.48\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"internet_quality\",\"reasoning\":\"0.50\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"navigation_access\",\"reasoning\":\"0.55\"},"
-            + "{\"action\":\"invest_infra\",\"target\":\"service_availability\",\"reasoning\":\"0.58\"}]\n\n"
-            + "Пример 3 — все факторы высокие, ремонт (wear=0.3, ВСЕ infra >= 0.95):\n"
-            + "[{\"action\":\"request_repair\",\"target\":\"none\",\"reasoning\":\"infra вся >=0.9, wear 0.3 портит отзывы\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"mobile_network\",\"reasoning\":\"ждём котировку, пока вкладываем в min mobile_network(0.40)\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"payment_system\",\"reasoning\":\"инвестируем payment_system(0.45)\"},"
+            + "{\"action\":\"invest_infra\",\"target\":\"internet_quality\",\"reasoning\":\"инвестируем internet_quality(0.48)\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"остальные факторы выше 0.9, ждем котировку\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждем котировку\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждем котировку\"}]\n\n"
+            + "Пример 3 — все факторы высокие, ремонт (wear=0.3, mobile_network=0.91, payment_system=0.93, transport_access=0.91, internet_quality=0.95, navigation_access=0.96, negotiating=false):\n"
+            + "[{\"action\":\"request_repair\",\"target\":\"none\",\"reasoning\":\"infra вся >=0.9, некуда инветировать, wear 0.3 > 0.2 портит отзывы\"},"
             + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём котировку\"},"
             + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём котировку\"},"
             + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём ремонт\"},"
             + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ремонт идёт\"},"
             + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ремонт идёт\"},"
             + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ремонт идёт\"}]\n\n"
-            + "Пример 4 — критический wear (wear=0.65, negotiating=false):\n"
-            + "[{\"action\":\"request_repair\",\"target\":\"none\",\"reasoning\":\"КРИТИЧНО wear 0.65, срочный ремонт\"},"
-            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём котировку\"},"
-            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём котировку\"},"
-            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ремонт важнее всего\"},"
+            + "Пример 4 — критический wear(wear=0.62, mobile_network=0.61, payment_system=0.63, transport_access=0.71, internet_quality=0.95, navigation_access=0.96, negotiating=false):\n"
+            + "[{\"action\":\"request_repair\",\"target\":\"none\",\"reasoning\":\"wear=0.62 > 0.6 КРИТИЧЕСКИЙ, уменьшает отзывы и доход\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём котировку, бюджет на ремонт\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"котировка → авто-принятие → ремонт\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ремонт важнее инвестиций при таком wear\"},"
             + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ремонт идёт\"},"
             + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ремонт идёт\"},"
             + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ремонт идёт\"}]\n\n"
-            + "Пример 5 — все факторы высокие, ремонт не требуется (wear=0.22, ВСЕ infra >= 0.95):\n"
-            + "[{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"infra вся >=0.9, wear 0.22 ок\"},"
-            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"копим деньги\"},"
-            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"копим деньги\"},"
-            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"копим деньги\"},"
-            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"копим деньги\"},"
-            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"копим деньги\"},"
-            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"копим деньги\"}]";
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ремонт идёт\"}]\n\n"
+            + "Пример 5 — всё хорошо, нечего делать (wear=0.21, mobile_network=0.91, payment_system=0.93, transport_access=0.91, internet_quality=0.95, navigation_access=0.96, negotiating=false):\n"
+            + "[{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"all_infra_above_90=true, wear<0.2 → ничего не нужно, копим\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"инфра высокая, износ низкий\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"оптимальное состояние\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"бюджет на резерв\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём деградацию инфры\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём деградацию инфры\"},"
+            + "{\"action\":\"skip\",\"target\":\"none\",\"reasoning\":\"ждём деградацию инфры\"}]";
 
     public AIClient() {
         this.apiKey = System.getenv("OPENROUTER_API_KEY");
@@ -339,6 +340,14 @@ public class AIClient {
                 sb.append(mapToJson((Map<String, Object>) v));
             } else if (v instanceof Boolean) {
                 sb.append(v);
+            } else if (v instanceof List) {
+                sb.append("[");
+                List<?> list = (List<?>) v;
+                for (int li = 0; li < list.size(); li++) {
+                    if (li > 0) sb.append(",");
+                    sb.append(jsonString(list.get(li).toString()));
+                }
+                sb.append("]");
             } else if (v instanceof Number) {
                 double d = ((Number) v).doubleValue();
                 if (d == Math.floor(d) && !Double.isInfinite(d)) {
