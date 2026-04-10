@@ -353,7 +353,7 @@
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties SourceId="1775734191880" External="false" Constant="false" Array="false">
-						<Formula><![CDATA[isRepair > 0 ? delay(1.0, 30) : 0]]></Formula>
+						<Formula><![CDATA[isRepair > 0 ? 1.0 : 0]]></Formula>
 						<Color>-4073239</Color>
 						<ValveIndex>1</ValveIndex>
 						<Points>
