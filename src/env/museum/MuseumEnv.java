@@ -24,6 +24,8 @@ public class MuseumEnv extends TimeSteppedEnvironment {
     private String csvFile = "";
     private boolean experimentMode = false;
     private int numVisitors = 0;
+    /** Minimum probability floor for probabilistic investment (manager Priority 4). */
+    private double investMinProb = 0.1;
 
     private int day = 0;
     private String season = "winter";
@@ -89,13 +91,16 @@ public class MuseumEnv extends TimeSteppedEnvironment {
             monthlyExpenditures = Integer.parseInt(args[4]);
         }
         if (args.length >= 6) {
-            maxDays = Integer.parseInt(args[5]);
+            investMinProb = Double.parseDouble(args[5]);
         }
         if (args.length >= 7) {
-            csvFile = args[6].replace("\"", "");
+            maxDays = Integer.parseInt(args[6]);
         }
         if (args.length >= 8) {
-            numVisitors = Integer.parseInt(args[7]);
+            csvFile = args[7].replace("\"", "");
+        }
+        if (args.length >= 9) {
+            numVisitors = Integer.parseInt(args[8]);
         }
         experimentMode = maxDays > 0 && !csvFile.isEmpty();
 
@@ -115,6 +120,7 @@ public class MuseumEnv extends TimeSteppedEnvironment {
                 + " | Hotel cap: " + hotelCapacity
                 + " | Ticket: " + ticketPrice + " | Hotel price: " + hotelPrice
                 + " | Monthly expenses: " + monthlyExpenditures
+                + " | investMinProb: " + investMinProb
                 + (experimentMode ? " | EXPERIMENT: " + maxDays + " days -> " + csvFile : ""));
     }
 
@@ -421,11 +427,13 @@ public class MuseumEnv extends TimeSteppedEnvironment {
         addPercept(Literal.parseLiteral("repairing(" + (repairing ? "yes" : "no") + ")"));
 
         addPercept("manager", Literal.parseLiteral("budget(" + String.format("%.0f", budget) + ")"));
+        addPercept("manager", Literal.parseLiteral(
+                "invest_min_prob(" + String.format(Locale.US, "%.4f", investMinProb) + ")"));
     }
 
     private static final String CSV_HEADER = String.join(",",
             "museumCapacity", "hotelCapacity", "ticketPrice", "hotelPrice",
-            "monthlyExpenditures", "numVisitors", "maxDays",
+            "monthlyExpenditures", "investMinProb", "numVisitors", "maxDays",
             "totalVisits", "totalHotelStays", "totalRefusals", "totalRepairs",
             "finalWear", "finalAttractiveness", "finalBudget",
             "finalMobileNetwork", "finalPaymentSystem", "finalTransportAccess",
@@ -440,9 +448,9 @@ public class MuseumEnv extends TimeSteppedEnvironment {
             try (PrintWriter pw = new PrintWriter(new FileWriter(f, true))) {
                 if (writeHeader) pw.println(CSV_HEADER);
                 pw.printf(Locale.US,
-                        "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f%n",
+                        "%d,%d,%d,%d,%d,%.4f,%d,%d,%d,%d,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f%n",
                         museumCapacity, hotelCapacity, ticketPrice, hotelPrice,
-                        monthlyExpenditures, numVisitors, maxDays,
+                        monthlyExpenditures, investMinProb, numVisitors, maxDays,
                         totalVisits, totalHotelStays, totalRefusals, totalRepairs,
                         wear, attractiveness, budget,
                         mobileNetwork, paymentSystem, transportAccess,

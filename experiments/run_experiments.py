@@ -25,7 +25,7 @@ DEFAULT_CONFIG = PROJECT_DIR / "experiments" / "experiment.json"
 MAS2J_TEMPLATE = """\
 MAS museum_complex {{
 
-    environment: museum.MuseumEnv({museumCapacity}, {hotelCapacity}, {ticketPrice}, {hotelPrice}, {monthlyExpenditures}, {maxDays}, "{csvFile}", {numVisitors})
+    environment: museum.MuseumEnv({museumCapacity}, {hotelCapacity}, {ticketPrice}, {hotelPrice}, {monthlyExpenditures}, {investMinProb}, {maxDays}, "{csvFile}", {numVisitors})
 
     agents: visitor #{numVisitors};
             manager;
@@ -62,6 +62,7 @@ def write_mas2j(combo: dict, csv_file: str, num_visitors: int):
         ticketPrice=combo["ticketPrice"],
         hotelPrice=combo["hotelPrice"],
         monthlyExpenditures=combo["monthlyExpenditures"],
+        investMinProb=combo.get("investMinProb", 0.1),
         maxDays=combo["maxDays"],
         csvFile=csv_file,
         numVisitors=num_visitors,

@@ -63,9 +63,11 @@ python3 experiments/run_experiments.py experiments/my_config.json  # свой к
 Файл `museum.mas2j` задаёт параметры среды и число агентов:
 
 ```
-environment: museum.MuseumEnv(museumCapacity, hotelCapacity, ticketPrice, hotelPrice, monthlyExpenditures)
+environment: museum.MuseumEnv(museumCapacity, hotelCapacity, ticketPrice, hotelPrice, monthlyExpenditures, investMinProb)
 agents: visitor #65; manager; restorer;
 ```
+
+Дополнительно (для режима экспериментов через `run_experiments.py`): `maxDays`, путь к CSV, `numVisitors` — см. `MuseumEnv.init()`.
 
 | Параметр | Описание | По умолчанию |
 |---|---|---|
@@ -74,6 +76,7 @@ agents: visitor #65; manager; restorer;
 | `ticketPrice` | Цена входного билета | 30 |
 | `hotelPrice` | Цена за ночь | 50 |
 | `monthlyExpenditures` | Ежемесячные расходы (каждые 30 дней) | 5000 |
+| `investMinProb` | Нижняя граница вероятности инвестирования при дефиците ремонтного фонда (менеджер) | 0.1 |
 
 ---
 

@@ -108,11 +108,11 @@ repair_fund(6000).    /* target savings for repair */
 /* Priority 4: Probabilistic investment */
 +!do_one_action(Day)
    : budget(B) & budget_reserve(R) & B >= R * 2 + 500 &
-     wear(W) & repair_fund(RF)
+     wear(W) & repair_fund(RF) & invest_min_prob(MinP)
    <- Available = B - R;
       if (Available < RF & W > 20) {
          /* Tight on repair fund + noticeable wear → may skip invest */
-         InvestProb = math.max(0.1, 1 - W / 100);
+         InvestProb = math.max(MinP, 1 - W / 100);
          .random(R2);
          if (R2 < InvestProb) {
             !try_invest(Day);
