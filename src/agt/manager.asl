@@ -26,6 +26,16 @@ negotiating_since(0).
       +repair_pending_delay(0);
       skip.
 
+/* Priority 1: pending quote → auto-accept (no need to wait for AI) */
++!do_one_action(Day)
+   : repair_quote(Price, Delay, _) & negotiating(yes)
+   <- .print("Day ", Day, ": Auto-accepting quote price=", Price, " delay=", Delay);
+      +repair_pending_delay(Delay);
+      +repair_price(Price);
+      -+negotiating(no);
+      .abolish(repair_quote(_, _, _));
+      skip.
+
 /* All other decisions → AI */
 +!do_one_action(Day)
    <- ai.decide(Action, Target);
@@ -56,14 +66,14 @@ negotiating_since(0).
       +repair_pending_delay(Delay);
       +repair_price(Price);
       -+negotiating(no);
-      -repair_quote(Price, Delay, _);
+      .abolish(repair_quote(_, _, _));
       skip.
 
 +!execute_decision(Day, "reject_quote", _)
    : repair_quote(Price, Delay, _)
    <- .print("Day ", Day, ": Rejecting quote price=", Price);
       -+negotiating(no);
-      -repair_quote(Price, Delay, _);
+      .abolish(repair_quote(_, _, _));
       skip.
 
 /* Fallback — invalid/impossible AI action */
@@ -74,8 +84,13 @@ negotiating_since(0).
 +!do_one_action(_) <- skip.
 -!do_one_action(_) <- skip.
 
+/* When a new quote arrives — remove any old quotes, keep only latest */
++repair_quote(Price, Delay, Day)
+   <- .abolish(repair_quote(_, _, _));
+      +repair_quote(Price, Delay, Day).
+
 /* When restorer refuses — reset negotiation state */
 +repair_refused(_)
    <- .print("Restorer refused, resetting negotiation.");
       -+negotiating(no);
-      -repair_refused(_).
+      .abolish(repair_refused(_)).
